@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>🎤 单词喊麦王 · 地狱难度 | 完整PEP词库 + 重点词模式</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        :root {
+            --dynamic-font-size: 12cqw;
+            --bg-color: #05050f;
+            --bg-secondary: #0a0a1a;
+            --card-bg: rgba(10,10,25,0.7);
+            --primary-color: #ff44cc;
+            --primary-hover: #ff77dd;
+            --secondary-color: #00f2ff;
+            --text-main: #ffffff;
+            --text-light: #eef5ff;
+            --text-muted: #b0c4ff;
+            --card-radius: 32px;
+            --btn-radius: 40px;
+            --card-shadow: 0 0 12px rgba(255,68,204,0.3);
+            --card-shadow-active: 0 0 28px var(--primary-color), inset 0 0 12px var(--secondary-color);
+            --neon-glow-primary: 0 0 8px var(--primary-color),0 0 18px var(--primary-color);
+            --neon-glow-secondary: 0 0 8px var(--secondary-color),0 0 18px var(--secondary-color);
+            --btn-bg: rgba(255,255,255,0.08);
+            --btn-border: rgba(255,255,255,0.25);
+            --header-bg: rgba(5,5,15,0.65);
+            --volume-bg: #2a2a3a;
+            --select-text: white;
+            --select-bg: rgba(0,0,0,0.5);
+            --select-option-bg: #1e1e2e;
+            --card-text: #fff;
+        }
+        [data-theme="simple-light"] {
+            --bg-color: #f5f7fc;
+            --bg-secondary: #e9ecf2;
+            --card-bg: rgba(255,255,255,0.85);
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --secondary-color: #10b981;
+            --text-main: #1e293b;
+            --text-light: #334155;
+            --text-muted: #64748b;
+            --card-shadow: 0 0 10px rgba(0,0,0,0.05);
+            --card-shadow-active: 0 0 20px rgba(59,130,246,0.3), inset 0 0 5px rgba(16,185,129,0.2);
+            --neon-glow-primary: 0 0 4px #3b82f6;
+            --neon-glow-secondary: 0 0 4px #10b981;
+            --btn-bg: rgba(0,0,0,0.05);
+            --btn-border: rgba(0,0,0,0.15);
+            --header-bg: rgba(255,255,255,0.7);
+            --volume-bg: #cbd5e1;
+            --select-text: #1e293b;
+            --select-bg: rgba(255,255,255,0.85);
+            --select-option-bg: white;
+            --card-text: #1e293b;
+        }
+        [data-theme="violet"] { --primary-color: #b026ff; --secondary-color: #00e5ff; }
+        [data-theme="forest"] { --primary-color: #00ff88; --secondary-color: #ff44ff; }
+        [data-theme="ocean"] { --primary-color: #1e88e5; --secondary-color: #ffb74d; }
+        [data-theme="sunset"] { --primary-color: #ff884d; --secondary-color: #ffee66; }
+        [data-theme="pink"] { --primary-color: #ff66b5; --secondary-color: #66ffea; }
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Nunito', system-ui, sans-serif;
+            min-height: 100vh;
+            overflow: hidden;
+            color: var(--text-light);
+            transition: background 0.2s;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at 20% 30%, rgba(255,68,204,0.2) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 70%, rgba(0,242,255,0.2) 0%, transparent 50%);
+            z-index: -2;
+            pointer-events: none;
+        }
+        .app-container { width: 100vw; height: 100vh; display: flex; flex-direction: column; padding: 1.5vh 2vw; position: relative; z-index: 1; }
+        .top-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 1.5vh; padding: 10px 20px; background: var(--header-bg); backdrop-filter: blur(12px); border-radius: 60px; border: 1px solid rgba(255,68,204,0.5); box-shadow: 0 4px 18px rgba(0,0,0,0.1); }
+        .logo { font-size: 1.4rem; font-weight: 900; background: linear-gradient(135deg, #fff, var(--secondary-color)); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: 1px; }
+        .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+        .btn { background: var(--btn-bg); border: 1px solid var(--btn-border); padding: 8px 16px; border-radius: 40px; color: var(--text-light); font-weight: 700; cursor: pointer; transition: 0.2s; backdrop-filter: blur(4px); font-size: 0.85rem; font-family: inherit; }
+        .btn-primary { background: var(--primary-color); border-color: var(--primary-color); color: white; box-shadow: 0 0 10px var(--primary-color); }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 0 20px var(--primary-color);}
+        .btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-1px); }
+        .select-group { display: flex; gap: 6px; background: var(--select-bg); padding: 4px 12px; border-radius: 40px; border: 1px solid var(--secondary-color); align-items: center; }
+        .select-group select { background: transparent; border: none; color: var(--select-text); font-weight: bold; font-size: 0.85rem; outline: none; cursor: pointer; font-family: inherit; }
+        .select-group select option { background: var(--select-option-bg); color: var(--select-text); }
+        .select-group span { color: var(--text-light); font-weight: bold; font-size: 0.85rem; }
+        .slider-group { display: flex; align-items: center; gap: 8px; background: var(--btn-bg); padding: 4px 12px; border-radius: 40px; border: 1px solid var(--btn-border); color: var(--text-light); }
+        .slider-group input { width: 120px; cursor: pointer; background: #333; }
+        .slider-group .speed-value { background: #000000aa; padding: 2px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; color: var(--secondary-color); }
+        .mode-switch, .key-switch { background: var(--btn-bg); border: 1px solid var(--secondary-color); cursor: pointer; }
+        .three-words { display: flex; justify-content: space-between; align-items: center; gap: 2vw; margin-bottom: 3vh; background: var(--card-bg); border-radius: 48px; padding: 1rem 2rem; backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.2); position: relative; }
+        .word-slot { flex: 1; text-align: center; background: rgba(0,0,0,0.3); border-radius: 32px; padding: 12px 8px; transition: 0.2s; }
+        .word-slot .label { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 1px; }
+        .word-slot .word-content { font-size: 1.4rem; font-weight: 800; color: var(--text-light); word-break: break-word; white-space: normal; }
+        .word-slot.current { background: var(--primary-color); box-shadow: 0 0 20px var(--primary-color); transform: scale(1.02); }
+        .word-slot.current .word-content { color: white; text-shadow: 0 0 5px white; }
+        .lang-toggle { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); background: var(--primary-color); border: none; border-radius: 40px; padding: 6px 16px; font-size: 0.75rem; font-weight: bold; color: white; cursor: pointer; box-shadow: 0 0 8px var(--primary-color); font-family: inherit; }
+        .flow-area { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; margin: 1rem 0; }
+        .word-stage { width: 100%; max-width: 600px; min-height: 160px; position: relative; display: flex; align-items: center; justify-content: center; background: var(--card-bg); border-radius: 60px; backdrop-filter: blur(12px); border: 1px solid var(--secondary-color); box-shadow: var(--card-shadow); overflow: auto; padding: 20px; }
+        .floating-word { font-family: 'Nunito', monospace; font-weight: 900; font-size: clamp(1.2rem, 8vw, 3.5rem); color: var(--text-light); text-shadow: var(--neon-glow-secondary); text-align: center; word-break: break-word; white-space: normal; max-width: 100%; line-height: 1.3; transition: opacity 0.2s; opacity: 1; }
+        .floating-word.animate-in { animation: fadeInScale 0.35s cubic-bezier(0.2,0.9,0.4,1.1) forwards; }
+        .floating-word.animate-out { animation: fadeOutScale 0.35s cubic-bezier(0.2,0.9,0.4,1.1) forwards; }
+        @keyframes fadeInScale { 0% { opacity: 0; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes fadeOutScale { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(0.9); } }
+        .right-panel { width: 260px; margin-left: 2vw; }
+        .mic-panel { background: rgba(0,0,0,0.55); border-radius: 32px; padding: 16px 10px; text-align: center; backdrop-filter: blur(12px); border: 1px solid var(--secondary-color); width: 100%; }
+        .volume-container { position: relative; width: 100%; height: 12px; background: var(--volume-bg); border-radius: 8px; overflow: visible; margin: 12px 0; }
+        .live-volume-fill { width: 0%; height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); border-radius: 8px; transition: width 0.08s linear; position: relative; z-index: 2; }
+        .full-marker { position: absolute; top: -4px; width: 3px; height: 20px; background-color: #ffffff; box-shadow: 0 0 8px #00ffff; border-radius: 2px; z-index: 5; transform: translateX(-50%); }
+        .full-label { position: absolute; top: -18px; font-size: 10px; color: #aaffff; white-space: nowrap; transform: translateX(-50%); font-weight: bold; text-shadow: 0 0 3px black; }
+        .score-badge { font-size: 1.2rem; font-weight: 900; margin-top: 6px; }
+        .progress-text { font-size: 0.85rem; margin-top: 10px; background: rgba(0,0,0,0.5); border-radius: 32px; padding: 6px 12px; }
+        .word-score-temp { margin-top: 8px; font-size: 0.9rem; font-weight: bold; color: var(--secondary-color); background: rgba(0,0,0,0.4); border-radius: 20px; padding: 4px; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: 0.2s; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-card { background: rgba(10,10,25,0.96); border: 1px solid var(--primary-color); border-radius: 32px; max-width: 90vw; width: 550px; padding: 24px; box-shadow: 0 0 40px rgba(0,0,0,0.6); }
+        .word-list { max-height: 300px; overflow-y: auto; margin: 16px 0; }
+        .word-item { display: flex; gap: 12px; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); align-items: center; }
+        .theme-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin-top: 15px; }
+        .theme-card { background: #1e1e2e; border-radius: 24px; padding: 12px; text-align: center; cursor: pointer; border: 1px solid transparent; color: white; }
+        .theme-card.active { border-color: var(--primary-color); background: #2a2a3e; }
+        input, select { background: #151525; border: 1px solid var(--secondary-color); border-radius: 32px; padding: 8px 14px; color: white; font-family: inherit; }
+        .row-flex { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin: 15px 0; }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="top-bar">
+        <div class="logo">🎤 单词喊麦王 · 地狱难度</div>
+        <div class="controls">
+            <div class="select-group"><span>📖 年级</span><select id="gradeSelect"></select></div>
+            <div class="select-group"><span>📚 单元</span><select id="unitSelect"></select></div>
+            <div class="slider-group"><span>🐇 快</span><input type="range" id="speedSlider" min="500" max="1600" step="1" value="950"><span>慢 🐢</span><span class="speed-value" id="speedValue">950ms</span></div>
+            <div class="slider-group"><span>🔁 重复</span><input type="range" id="repeatSlider" min="1" max="8" step="1" value="4"><span id="repeatValue">4次</span></div>
+            <div class="slider-group"><span>A</span><input type="range" id="sizeSlider" min="5" max="25" step="1" value="14"><span>A+</span></div>
+            <button class="btn" id="soundToggleBtn">🔊 音效开</button>
+            <button class="btn mode-switch" id="modeToggleBtn">👤 单人模式</button>
+            <button class="btn key-switch" id="keyWordToggleBtn">⭐ 重点词模式 (开)</button>
+            <button class="btn" id="themeBtn">🎨 主题</button>
+            <button class="btn" id="manageBtn">📘 单词表</button>
+            <button class="btn btn-primary" id="startGameBtn">🎙️ 开始喊麦</button>
+            <button class="btn" id="resetGameBtn">🔄 重置进度</button>
+            <button class="btn" id="fullscreenBtn">⛶ 全屏</button>
+        </div>
+    </div>
+    <div class="three-words" id="threeWordsArea">
+        <div class="word-slot" id="prevSlot"><div class="label">⬅ 上一个</div><div class="word-content" id="prevWord">---</div></div>
+        <div class="word-slot current" id="currentSlot"><div class="label">🎤 当前</div><div class="word-content" id="currentWordZh">---</div></div>
+        <div class="word-slot" id="nextSlot"><div class="label">➡ 下一个</div><div class="word-content" id="nextWord">---</div></div>
+        <button class="lang-toggle" id="langToggleBtn">🌐 中/EN</button>
+    </div>
+    <div style="display: flex; gap: 2vw; flex: 1; align-items: center;">
+        <div class="flow-area" style="flex: 1;"><div class="word-stage" id="wordStage"><div class="floating-word" id="floatingWord"></div></div></div>
+        <div class="right-panel">
+            <div class="mic-panel" id="micPanel">
+                <div>🎙️ 实时音量</div>
+                <div class="volume-container" id="volumeContainer"><div class="live-volume-fill" id="volumeFill"></div><div class="full-marker" id="fullMarker" style="left: 85%;"></div><div class="full-label" id="fullLabel" style="left: 85%;">⭐ 满分线</div></div>
+                <div class="score-badge" id="liveVolumeValue">0%</div>
+                <div class="word-score-temp" id="currentWordScoreDisplay">🏅 单词得分: --</div>
+                <div class="progress-text" id="progressInfo">
+                    <span>📖 单词进度</span> <strong id="wordCounter">0 / 0</strong><br>
+                    <span>🔁 重复次数</span> <strong id="repeatCounter">0/0</strong><br>
+                    <span>⭐ 单元总分</span> <strong id="totalScoreSpan">0</strong><br>
+                    <span>💯 平均分</span> <strong id="avgScoreSpan">0</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-overlay" id="modalOverlay"><div class="modal-card"><h3>📖 单词表 (可编辑)</h3><div class="word-list" id="wordList"></div><div class="row-flex"><input type="text" id="wordEn" placeholder="英文"><input type="text" id="wordZh" placeholder="中文"><button id="addWordBtn" class="btn">添加/保存</button></div><button class="btn" id="modalClose">关闭</button></div></div>
+<div class="modal-overlay" id="resultModal"><div class="modal-card"><h2 id="resultTitle">🎤 单元评分</h2><p id="resultMsg"></p><button class="btn btn-primary" id="resultOkBtn">继续挑战</button></div></div>
+<div class="modal-overlay" id="themeModalOverlay"><div class="modal-card"><h3>🎨 炫彩主题</h3><div class="theme-grid" id="themeGrid"></div><button class="modal-close" id="themeModalClose">关闭</button></div></div>
+
+<script>
+    // ======================= 基于PEP教材完整词库 (三上/三下/四上/四下/五下/六下) =======================
+    // 每个单词: { en, zh, isBold }   isBold 表示是否为粗体词（重点词）
+    const FULL_WORD_DATA = {
+        "三年级上册": {
+            unit1: [
+                { en: "name", zh: "名字", isBold: false }, { en: "nice", zh: "美好的", isBold: false }, { en: "ear", zh: "耳朵", isBold: true }, { en: "hand", zh: "手", isBold: true }, { en: "eye", zh: "眼睛", isBold: true }, { en: "mouth", zh: "嘴巴", isBold: true }, { en: "arm", zh: "手臂", isBold: true }, { en: "can", zh: "能；可以", isBold: false }, { en: "share", zh: "分享", isBold: true }, { en: "smile", zh: "微笑", isBold: true }, { en: "listen", zh: "听", isBold: true }, { en: "help", zh: "帮助", isBold: true }, { en: "say", zh: "说", isBold: false }, { en: "friend", zh: "朋友", isBold: false }, { en: "good", zh: "好的", isBold: false }
+            ],
+            unit2: [
+                { en: "mum", zh: "妈妈", isBold: true }, { en: "dad", zh: "爸爸", isBold: true }, { en: "grandma", zh: "奶奶；外婆", isBold: true }, { en: "grandpa", zh: "爷爷；外公", isBold: true }, { en: "grandfather", zh: "祖父", isBold: true }, { en: "grandmother", zh: "祖母", isBold: true }, { en: "mother", zh: "母亲", isBold: true }, { en: "father", zh: "父亲", isBold: true }, { en: "me", zh: "我", isBold: true }, { en: "sister", zh: "姐妹", isBold: true }, { en: "family", zh: "家庭", isBold: true }, { en: "big", zh: "大的", isBold: true }, { en: "cousin", zh: "表兄妹", isBold: true }, { en: "brother", zh: "兄弟", isBold: true }, { en: "baby", zh: "婴儿", isBold: true }, { en: "uncle", zh: "叔叔", isBold: true }, { en: "aunt", zh: "阿姨", isBold: true }, { en: "small", zh: "小的", isBold: true }
+            ],
+            unit3: [
+                { en: "like", zh: "喜欢", isBold: true }, { en: "dog", zh: "狗", isBold: true }, { en: "pet", zh: "宠物", isBold: false }, { en: "cat", zh: "猫", isBold: true }, { en: "fish", zh: "鱼", isBold: true }, { en: "bird", zh: "鸟", isBold: true }, { en: "rabbit", zh: "兔子", isBold: true }, { en: "go", zh: "去", isBold: false }, { en: "zoo", zh: "动物园", isBold: false }, { en: "fox", zh: "狐狸", isBold: false }, { en: "Miss", zh: "小姐", isBold: false }, { en: "panda", zh: "熊猫", isBold: true }, { en: "red panda", zh: "小熊猫", isBold: false }, { en: "cute", zh: "可爱的", isBold: false }, { en: "monkey", zh: "猴子", isBold: true }, { en: "tiger", zh: "老虎", isBold: true }, { en: "elephant", zh: "大象", isBold: true }, { en: "lion", zh: "狮子", isBold: true }, { en: "animal", zh: "动物", isBold: false }, { en: "giraffe", zh: "长颈鹿", isBold: true }, { en: "tall", zh: "高的", isBold: true }, { en: "fast", zh: "快速的", isBold: true }
+            ],
+            unit4: [
+                { en: "apple", zh: "苹果", isBold: true }, { en: "banana", zh: "香蕉", isBold: true }, { en: "farm", zh: "农场", isBold: false }, { en: "air", zh: "空气", isBold: true }, { en: "orange", zh: "橙子；橙色", isBold: true }, { en: "grape", zh: "葡萄", isBold: true }, { en: "school", zh: "学校", isBold: false }, { en: "garden", zh: "花园", isBold: false }, { en: "need", zh: "需要", isBold: false }, { en: "water", zh: "水", isBold: true }, { en: "flower", zh: "花", isBold: true }, { en: "grass", zh: "草", isBold: false }, { en: "plant", zh: "植物", isBold: false }, { en: "new", zh: "新的", isBold: false }, { en: "tree", zh: "树", isBold: true }, { en: "sun", zh: "太阳", isBold: true }, { en: "give", zh: "给予", isBold: false }, { en: "them", zh: "他们", isBold: false }
+            ],
+            unit5: [
+                { en: "colour", zh: "颜色", isBold: false }, { en: "orange", zh: "橙色", isBold: true }, { en: "green", zh: "绿色", isBold: true }, { en: "red", zh: "红色", isBold: true }, { en: "make", zh: "制作", isBold: false }, { en: "purple", zh: "紫色", isBold: true }, { en: "brown", zh: "棕色", isBold: true }, { en: "bear", zh: "熊", isBold: false }, { en: "yellow", zh: "黄色", isBold: true }, { en: "duck", zh: "鸭子", isBold: false }, { en: "sea", zh: "海洋", isBold: false }, { en: "some", zh: "一些", isBold: false }, { en: "pink", zh: "粉色", isBold: true }, { en: "draw", zh: "画画", isBold: false }, { en: "white", zh: "白色", isBold: true }, { en: "black", zh: "黑色", isBold: true }
+            ],
+            unit6: [
+                { en: "one", zh: "一", isBold: true }, { en: "two", zh: "二", isBold: true }, { en: "three", zh: "三", isBold: true }, { en: "four", zh: "四", isBold: true }, { en: "five", zh: "五", isBold: true }, { en: "six", zh: "六", isBold: true }, { en: "seven", zh: "七", isBold: true }, { en: "eight", zh: "八", isBold: true }, { en: "nine", zh: "九", isBold: true }, { en: "ten", zh: "十", isBold: true }, { en: "old", zh: "年老的", isBold: false }, { en: "year", zh: "年", isBold: false }, { en: "o'clock", zh: "点钟", isBold: false }, { en: "cut", zh: "切", isBold: false }, { en: "eat", zh: "吃", isBold: false }, { en: "cake", zh: "蛋糕", isBold: false }
+            ]
+        },
+        "三年级下册": {
+            unit1: [
+                { en: "where", zh: "哪里", isBold: false }, { en: "from", zh: "来自", isBold: false }, { en: "about", zh: "关于", isBold: false }, { en: "today", zh: "今天", isBold: false }, { en: "teacher", zh: "老师", isBold: true }, { en: "student", zh: "学生", isBold: true }, { en: "after", zh: "在...之后", isBold: false }, { en: "who", zh: "谁", isBold: false }, { en: "girl", zh: "女孩", isBold: true }, { en: "neighbour", zh: "邻居", isBold: false }, { en: "boy", zh: "男孩", isBold: true }, { en: "woman", zh: "女人", isBold: true }, { en: "man", zh: "男人", isBold: true }, { en: "Mr", zh: "先生", isBold: false }, { en: "classmate", zh: "同学", isBold: false }, { en: "he", zh: "他", isBold: false }, { en: "also", zh: "也", isBold: false }, { en: "English", zh: "英语", isBold: false }, { en: "she", zh: "她", isBold: false }, { en: "very", zh: "非常", isBold: false }, { en: "UK", zh: "英国", isBold: true }, { en: "China", zh: "中国", isBold: true }, { en: "Canada", zh: "加拿大", isBold: true }, { en: "USA", zh: "美国", isBold: true }
+            ],
+            unit2: [
+                { en: "has", zh: "有", isBold: false }, { en: "long", zh: "长的", isBold: true }, { en: "body", zh: "身体", isBold: false }, { en: "short", zh: "短的", isBold: true }, { en: "leg", zh: "腿", isBold: false }, { en: "right", zh: "正确；右边", isBold: true }, { en: "fat", zh: "胖的", isBold: true }, { en: "thin", zh: "瘦的", isBold: true }, { en: "slow", zh: "慢的", isBold: true }, { en: "love", zh: "爱", isBold: false }, { en: "tail", zh: "尾巴", isBold: false }, { en: "her", zh: "她的", isBold: false }, { en: "gift", zh: "礼物", isBold: false }, { en: "picture", zh: "图画", isBold: true }, { en: "card", zh: "卡片", isBold: true }, { en: "sing", zh: "唱歌", isBold: true }, { en: "dance", zh: "跳舞", isBold: true }, { en: "talk", zh: "说话", isBold: false }, { en: "face", zh: "脸", isBold: false }, { en: "all", zh: "全部", isBold: false }, { en: "song", zh: "歌曲", isBold: false }, { en: "or", zh: "或者", isBold: false }, { en: "much", zh: "许多", isBold: false }
+            ],
+            unit3: [
+                { en: "eraser", zh: "橡皮", isBold: false }, { en: "find", zh: "找到", isBold: false }, { en: "ruler", zh: "尺子", isBold: true }, { en: "pen", zh: "钢笔", isBold: true }, { en: "pencil", zh: "铅笔", isBold: true }, { en: "book", zh: "书", isBold: true }, { en: "bag", zh: "书包", isBold: true }, { en: "paper", zh: "纸", isBold: false }, { en: "these", zh: "这些", isBold: false }, { en: "see", zh: "看见", isBold: true }, { en: "smell", zh: "闻", isBold: true }, { en: "taste", zh: "品尝", isBold: true }, { en: "touch", zh: "触摸", isBold: true }, { en: "nose", zh: "鼻子", isBold: false }, { en: "tongue", zh: "舌头", isBold: false }, { en: "class", zh: "班级", isBold: false }, { en: "in", zh: "在...里", isBold: false }, { en: "computer", zh: "电脑", isBold: false }, { en: "learn", zh: "学习", isBold: false }
+            ],
+            unit4: [
+                { en: "breakfast", zh: "早餐", isBold: false }, { en: "time", zh: "时间", isBold: false }, { en: "bread", zh: "面包", isBold: true }, { en: "egg", zh: "鸡蛋", isBold: true }, { en: "milk", zh: "牛奶", isBold: true }, { en: "noodle", zh: "面条", isBold: true }, { en: "juice", zh: "果汁", isBold: true }, { en: "rice", zh: "米饭", isBold: true }, { en: "meat", zh: "肉", isBold: true }, { en: "vegetable", zh: "蔬菜", isBold: true }, { en: "healthy", zh: "健康的", isBold: false }, { en: "plate", zh: "盘子", isBold: false }, { en: "soup", zh: "汤", isBold: true }, { en: "fruit", zh: "水果", isBold: true }, { en: "colourful", zh: "色彩缤纷", isBold: false }, { en: "candy", zh: "糖果", isBold: false }, { en: "yummy", zh: "美味的", isBold: false }
+            ],
+            unit5: [
+                { en: "boat", zh: "小船", isBold: true }, { en: "cool", zh: "酷的", isBold: false }, { en: "keep", zh: "保持", isBold: false }, { en: "at", zh: "在", isBold: false }, { en: "home", zh: "家", isBold: false }, { en: "ball", zh: "球", isBold: true }, { en: "doll", zh: "玩偶", isBold: true }, { en: "car", zh: "汽车", isBold: false }, { en: "on", zh: "在...上", isBold: true }, { en: "shelf", zh: "架子", isBold: false }, { en: "in", zh: "在...里", isBold: true }, { en: "box", zh: "盒子", isBold: false }, { en: "cap", zh: "帽子", isBold: true }, { en: "map", zh: "地图", isBold: true }, { en: "under", zh: "在下面", isBold: true }, { en: "still", zh: "仍然", isBold: false }, { en: "put", zh: "放置", isBold: false }
+            ],
+            unit6: [
+                { en: "fifteen", zh: "十五", isBold: false }, { en: "twelve", zh: "十二", isBold: true }, { en: "fourteen", zh: "十四", isBold: true }, { en: "thirteen", zh: "十三", isBold: true }, { en: "eleven", zh: "十一", isBold: true }, { en: "twenty", zh: "二十", isBold: false }, { en: "seventeen", zh: "十七", isBold: true }, { en: "sixteen", zh: "十六", isBold: true }, { en: "eighteen", zh: "十八", isBold: false }, { en: "nineteen", zh: "十九", isBold: false }, { en: "piggy bank", zh: "储蓄罐", isBold: false }, { en: "pay", zh: "支付", isBold: false }, { en: "back", zh: "背部；返回", isBold: false }
+            ]
+        },
+        "四年级上册": {
+            unit1: [
+                { en: "PE", zh: "体育", isBold: false },{ en: "job", zh: "工作", isBold: false },{ en: "doctor", zh: "医生", isBold: true },{ en: "farmer", zh: "农民", isBold: true },{ en: "nurse", zh: "护士", isBold: true },{ en: "office worker", zh: "办公室职员", isBold: true },{ en: "factory worker", zh: "工厂工人", isBold: true },{ en: "busy", zh: "忙碌的", isBold: false },{ en: "tired", zh: "疲倦的", isBold: false },{ en: "chore", zh: "家务", isBold: false },{ en: "cook", zh: "厨师；烹饪", isBold: true },{ en: "clean", zh: "清洁", isBold: false },{ en: "room", zh: "房间", isBold: false },{ en: "look after", zh: "照顾", isBold: true },{ en: "sweep", zh: "打扫", isBold: true },{ en: "floor", zh: "地板", isBold: true },{ en: "together", zh: "一起", isBold: false },{ en: "people", zh: "人们", isBold: false },{ en: "child", zh: "孩子", isBold: false }
+            ],
+            unit2: [
+                { en: "his", zh: "他的", isBold: false },{ en: "strong", zh: "强壮的", isBold: true },{ en: "hair", zh: "头发", isBold: true },{ en: "also", zh: "也", isBold: false },{ en: "kind", zh: "和蔼的", isBold: true },{ en: "quiet", zh: "安静的", isBold: true },{ en: "read", zh: "阅读", isBold: true },{ en: "Chinese", zh: "语文；中国人", isBold: true },{ en: "play", zh: "玩", isBold: true },{ en: "game", zh: "游戏", isBold: true },{ en: "football", zh: "足球", isBold: true },{ en: "basketball", zh: "篮球", isBold: false },{ en: "always", zh: "总是", isBold: false },{ en: "best", zh: "最好的", isBold: false }
+            ],
+            unit3: [
+                { en: "afternoon", zh: "下午", isBold: false },{ en: "there", zh: "那里", isBold: false },{ en: "playground", zh: "操场", isBold: true },{ en: "park", zh: "公园", isBold: true },{ en: "over", zh: "结束", isBold: false },{ en: "hospital", zh: "医院", isBold: true },{ en: "shop", zh: "商店", isBold: true },{ en: "toilet", zh: "厕所", isBold: true },{ en: "bus stop", zh: "公交站", isBold: true },{ en: "sport", zh: "运动", isBold: true },{ en: "walk", zh: "步行", isBold: true },{ en: "library", zh: "图书馆", isBold: false },{ en: "favourite", zh: "最喜欢的", isBold: false },{ en: "place", zh: "地方", isBold: false },{ en: "photo", zh: "照片", isBold: false },{ en: "story", zh: "故事", isBold: false },{ en: "buy", zh: "买", isBold: false }
+            ],
+            unit4: [
+                { en: "firefighter", zh: "消防员", isBold: false },{ en: "why", zh: "为什么", isBold: false },{ en: "driver", zh: "司机", isBold: true },{ en: "cleaner", zh: "清洁工", isBold: true },{ en: "cook", zh: "厨师", isBold: true },{ en: "delivery worker", zh: "快递员", isBold: true },{ en: "police officer", zh: "警察", isBold: true },{ en: "a lot of", zh: "许多", isBold: false },{ en: "now", zh: "现在", isBold: false },{ en: "make the bed", zh: "整理床铺", isBold: false },{ en: "old", zh: "老的", isBold: true },{ en: "ell", zh: "？", isBold: false },{ en: "everyone", zh: "每个人", isBold: false },{ en: "Ms", zh: "女士", isBold: false }
+            ],
+            unit5: [
+                { en: "speak", zh: "说", isBold: false },{ en: "weather", zh: "天气", isBold: false },{ en: "sunny", zh: "晴朗的", isBold: true },{ en: "hot", zh: "热的", isBold: true },{ en: "cold", zh: "冷的", isBold: true },{ en: "windy", zh: "有风的", isBold: true },{ en: "cloudy", zh: "多云的", isBold: true },{ en: "rainy", zh: "下雨的", isBold: true },{ en: "snowy", zh: "下雪的", isBold: true },{ en: "cool", zh: "凉爽的", isBold: true },{ en: "warm", zh: "温暖的", isBold: true },{ en: "film", zh: "电影", isBold: false },{ en: "fly", zh: "飞", isBold: false },{ en: "kite", zh: "风筝", isBold: false },{ en: "snowman", zh: "雪人", isBold: false },{ en: "fun", zh: "乐趣", isBold: false },{ en: "their", zh: "他们的", isBold: false },{ en: "swim", zh: "游泳", isBold: false },{ en: "Sydney", zh: "悉尼", isBold: false }
+            ],
+            unit6: [
+                { en: "whose", zh: "谁的", isBold: false },{ en: "sweater", zh: "毛衣", isBold: true },{ en: "sock", zh: "袜子", isBold: true },{ en: "shirt", zh: "衬衫", isBold: true },{ en: "mine", zh: "我的", isBold: false },{ en: "wear", zh: "穿", isBold: false },{ en: "coat", zh: "外套", isBold: true },{ en: "dress", zh: "连衣裙", isBold: true },{ en: "winter", zh: "冬天", isBold: true },{ en: "spring", zh: "春天", isBold: true },{ en: "summer", zh: "夏天", isBold: true },{ en: "autumn", zh: "秋天", isBold: true },{ en: "which", zh: "哪一个", isBold: false },{ en: "season", zh: "季节", isBold: true },{ en: "snow", zh: "雪", isBold: false },{ en: "get together", zh: "团聚", isBold: false },{ en: "T-shirt", zh: "T恤", isBold: false },{ en: "fall", zh: "秋天", isBold: false },{ en: "leaf", zh: "叶子", isBold: false },{ en: "leaves", zh: "叶子（复数）", isBold: false },{ en: "glove", zh: "手套", isBold: false },{ en: "then", zh: "然后", isBold: false }
+            ]
+        },
+        "四年级下册": {
+            unit1: [
+                { en: "sorry", zh: "抱歉", isBold: false },{ en: "hurry", zh: "赶快", isBold: false },{ en: "late", zh: "迟到", isBold: true },{ en: "class", zh: "班级", isBold: true },{ en: "ready", zh: "准备好", isBold: false },{ en: "rule", zh: "规则", isBold: false },{ en: "classroom", zh: "教室", isBold: true },{ en: "turn off", zh: "关闭", isBold: true },{ en: "light", zh: "灯", isBold: true },{ en: "blackboard", zh: "黑板", isBold: false },{ en: "desk", zh: "书桌", isBold: true },{ en: "chair", zh: "椅子", isBold: true },{ en: "tidy", zh: "整洁的", isBold: false },{ en: "music", zh: "音乐", isBold: false },{ en: "door", zh: "门", isBold: true },{ en: "window", zh: "窗户", isBold: true },{ en: "fan", zh: "风扇", isBold: true },{ en: "when", zh: "什么时候", isBold: false },{ en: "understand", zh: "理解", isBold: false },{ en: "wall", zh: "墙", isBold: false },{ en: "newspaper", zh: "报纸", isBold: false },{ en: "hand out", zh: "分发", isBold: false },{ en: "workbook", zh: "练习册", isBold: false }
+            ],
+            unit2: [
+                { en: "watch", zh: "手表", isBold: false },{ en: "TV", zh: "电视", isBold: false },{ en: "homework", zh: "作业", isBold: true },{ en: "first", zh: "第一", isBold: false },{ en: "wet", zh: "湿的", isBold: false },{ en: "run", zh: "跑", isBold: false },{ en: "living room", zh: "客厅", isBold: true },{ en: "safe", zh: "安全的", isBold: false },{ en: "word", zh: "单词", isBold: true },{ en: "wash", zh: "洗", isBold: true },{ en: "helpful", zh: "有帮助的", isBold: false },{ en: "loud", zh: "大声的", isBold: false },{ en: "sleep", zh: "睡觉", isBold: false },{ en: "bedroom", zh: "卧室", isBold: true },{ en: "kitchen", zh: "厨房", isBold: true },{ en: "study", zh: "书房", isBold: true },{ en: "bathroom", zh: "浴室", isBold: true },{ en: "think", zh: "思考", isBold: false },{ en: "work", zh: "工作", isBold: false },{ en: "hard", zh: "努力地", isBold: false },{ en: "follow", zh: "跟随", isBold: false },{ en: "feel", zh: "感觉", isBold: false }
+            ],
+            unit3: [
+                { en: "over", zh: "结束", isBold: false },{ en: "kid", zh: "小孩", isBold: false },{ en: "dinner", zh: "晚餐", isBold: true },{ en: "art", zh: "美术", isBold: true },{ en: "lunch", zh: "午餐", isBold: true },{ en: "maths", zh: "数学", isBold: true },{ en: "get up", zh: "起床", isBold: true },{ en: "go to school", zh: "上学", isBold: true },{ en: "go home", zh: "回家", isBold: true },{ en: "go to bed", zh: "上床睡觉", isBold: true },{ en: "want", zh: "想要", isBold: false },{ en: "clock", zh: "时钟", isBold: false },{ en: "just", zh: "只是", isBold: false },{ en: "minute", zh: "分钟", isBold: false }
+            ],
+            unit4: [
+                { en: "trousers", zh: "裤子", isBold: true },{ en: "pair", zh: "一对", isBold: false },{ en: "clothes", zh: "衣服", isBold: false },{ en: "those", zh: "那些", isBold: false },{ en: "shorts", zh: "短裤", isBold: true },{ en: "jacket", zh: "夹克", isBold: true },{ en: "skirt", zh: "裙子", isBold: true },{ en: "expensive", zh: "昂贵的", isBold: true },{ en: "cheap", zh: "便宜的", isBold: true },{ en: "shoe", zh: "鞋子", isBold: true },{ en: "dear", zh: "亲爱的", isBold: false },{ en: "beautiful", zh: "美丽的", isBold: true },{ en: "take", zh: "拿", isBold: false },{ en: "hat", zh: "帽子", isBold: true },{ en: "sunglasses", zh: "太阳镜", isBold: true },{ en: "free", zh: "免费的", isBold: false },{ en: "large", zh: "大的", isBold: false },{ en: "size", zh: "尺寸", isBold: false },{ en: "list", zh: "清单", isBold: false },{ en: "try on", zh: "试穿", isBold: false },{ en: "any", zh: "任何", isBold: false }
+            ],
+            unit5: [
+                { en: "cow", zh: "奶牛", isBold: true },{ en: "horse", zh: "马", isBold: true },{ en: "sheep", zh: "绵羊", isBold: true },{ en: "pig", zh: "猪", isBold: true },{ en: "chicken", zh: "鸡", isBold: true },{ en: "tomato", zh: "西红柿", isBold: true },{ en: "bee", zh: "蜜蜂", isBold: false },{ en: "mouse", zh: "老鼠", isBold: false },{ en: "carrot", zh: "胡萝卜", isBold: true },{ en: "potato", zh: "土豆", isBold: true },{ en: "green bean", zh: "豆角", isBold: false },{ en: "can", zh: "罐子", isBold: false },{ en: "a box of", zh: "一盒", isBold: false }
+            ],
+            unit6: [
+                { en: "feed", zh: "喂", isBold: true },{ en: "pass", zh: "传递", isBold: false },{ en: "pick", zh: "摘", isBold: true },{ en: "milk", zh: "挤奶", isBold: true },{ en: "knife", zh: "刀", isBold: true },{ en: "fork", zh: "叉", isBold: true },{ en: "chopstick", zh: "筷子", isBold: true },{ en: "bowl", zh: "碗", isBold: true },{ en: "waste", zh: "浪费", isBold: false },{ en: "food", zh: "食物", isBold: false },{ en: "delicious", zh: "美味的", isBold: false },{ en: "clear the table", zh: "收拾餐桌", isBold: false },{ en: "set the table", zh: "摆餐具", isBold: false },{ en: "supermarket", zh: "超市", isBold: false },{ en: "herself", zh: "她自己", isBold: false },{ en: "week", zh: "星期", isBold: false },{ en: "salad", zh: "沙拉", isBold: false }
+            ]
+        },
+        "五年级下册": {
+            unit1: [
+                { en: "eat breakfast", zh: "吃早餐", isBold: true },{ en: "play sports", zh: "做运动", isBold: true },{ en: "have...class", zh: "上课", isBold: true },{ en: "exercise", zh: "锻炼", isBold: true },{ en: "do morning execise", zh: "做早操", isBold: true },{ en: "eat dinner", zh: "吃晚餐", isBold: true },{ en: "clean my room", zh: "打扫房间", isBold: true },{ en: "go for a walk", zh: "散步", isBold: true },{ en: "go shopping", zh: "购物", isBold: true },{ en: "take", zh: "学习；上课", isBold: true },{ en: "dancing", zh: "跳舞", isBold: true },{ en: "take a dancing class", zh: "上舞蹈课", isBold: true },{ en: "when", zh: "什么时候", isBold: false },{ en: "usually", zh: "通常", isBold: false },{ en: "a.m.", zh: "上午", isBold: false },{ en: "p.m.", zh: "下午", isBold: false },{ en: "why", zh: "为什么", isBold: false },{ en: "work", zh: "工作", isBold: false },{ en: "always", zh: "总是", isBold: false },{ en: "go swimming", zh: "去游泳", isBold: false }
+            ],
+            unit2: [
+                { en: "spring", zh: "春天", isBold: true },{ en: "summer", zh: "夏天", isBold: true },{ en: "autumn", zh: "秋天", isBold: true },{ en: "winter", zh: "冬天", isBold: true },{ en: "season", zh: "季节", isBold: true },{ en: "picnic", zh: "野餐", isBold: true },{ en: "go on a picnic", zh: "去野餐", isBold: true },{ en: "pick", zh: "摘", isBold: true },{ en: "pick apples", zh: "摘苹果", isBold: true },{ en: "snowman", zh: "雪人", isBold: true },{ en: "make a snowman", zh: "堆雪人", isBold: true },{ en: "go swimming", zh: "去游泳", isBold: true },{ en: "which", zh: "哪一个", isBold: false },{ en: "best", zh: "最", isBold: false },{ en: "snow", zh: "雪", isBold: false },{ en: "good job", zh: "做得好", isBold: false },{ en: "because", zh: "因为", isBold: false },{ en: "vacation", zh: "假期", isBold: false }
+            ],
+            unit3: [
+                { en: "January", zh: "一月", isBold: true },{ en: "February", zh: "二月", isBold: true },{ en: "March", zh: "三月", isBold: true },{ en: "April", zh: "四月", isBold: true },{ en: "May", zh: "五月", isBold: true },{ en: "June", zh: "六月", isBold: true },{ en: "July", zh: "七月", isBold: true },{ en: "August", zh: "八月", isBold: true },{ en: "September", zh: "九月", isBold: true },{ en: "October", zh: "十月", isBold: true },{ en: "November", zh: "十一月", isBold: true },{ en: "December", zh: "十二月", isBold: true },{ en: "few", zh: "很少", isBold: false },{ en: "a few", zh: "一些", isBold: false },{ en: "sports", zh: "运动", isBold: false },{ en: "sports meet", zh: "运动会", isBold: false },{ en: "trip", zh: "旅行", isBold: false },{ en: "plant", zh: "种植", isBold: false },{ en: "contest", zh: "比赛", isBold: false },{ en: "Labour Day", zh: "劳动节", isBold: false },{ en: "the Great Wall", zh: "长城", isBold: false },{ en: "national", zh: "国家的", isBold: false },{ en: "National Day", zh: "国庆节", isBold: false },{ en: "Thanksgiving Day", zh: "感恩节", isBold: false },{ en: "Christmas", zh: "圣诞节", isBold: false }
+            ],
+            unit4: [
+                { en: "first（1st）", zh: "第一", isBold: true },{ en: "second(2nd)", zh: "第二", isBold: true },{ en: "third(3rd)", zh: "第三", isBold: true },{ en: "fouth(4th)", zh: "第四", isBold: true },{ en: "fifth(5th)", zh: "第五", isBold: true },{ en: "twelfth", zh: "第十二", isBold: true },{ en: "twentieth", zh: "第二十", isBold: true },{ en: "twenty-first", zh: "第二十一", isBold: true },{ en: "twenty-third", zh: "第二十三", isBold: true },{ en: "thirtieth", zh: "第三十", isBold: true }
+            ],
+            unit5: [
+                { en: "mine", zh: "我的", isBold: true },{ en: "yours", zh: "你的", isBold: true },{ en: "his", zh: "他的", isBold: true },{ en: "hers", zh: "她的", isBold: true },{ en: "theirs", zh: "他们的", isBold: true },{ en: "ours", zh: "我们的", isBold: true },{ en: "climbing", zh: "攀爬", isBold: true },{ en: "eating", zh: "吃", isBold: true },{ en: "playing", zh: "玩", isBold: true },{ en: "jumping", zh: "跳", isBold: true },{ en: "drinking", zh: "喝", isBold: true },{ en: "sleeping", zh: "睡觉", isBold: true }
+            ],
+            unit6: [
+                { en: "doing morning execise", zh: "做早操", isBold: true },{ en: "having lunch", zh: "吃午餐", isBold: true },{ en: "reading a book", zh: "读书", isBold: true },{ en: "listening to music", zh: "听音乐", isBold: true },{ en: "keep", zh: "保持", isBold: true },{ en: "keep to the right", zh: "靠右", isBold: true },{ en: "keep your desk clean", zh: "保持课桌整洁", isBold: true },{ en: "talk quietly", zh: "小声说话", isBold: true },{ en: "turn", zh: "轮流", isBold: true },{ en: "take turns", zh: "轮流", isBold: true },{ en: "bamboo", zh: "竹子", isBold: false },{ en: "say", zh: "说", isBold: false },{ en: "teach", zh: "教", isBold: false }
+            ]
+        },
+        "六年级下册": {
+            unit1: [
+                { en: "younger", zh: "更年轻的", isBold: true },{ en: "older", zh: "更年长的", isBold: true },{ en: "taller", zh: "更高的", isBold: true },{ en: "shorter", zh: "更矮的", isBold: true },{ en: "longer", zh: "更长的", isBold: true },{ en: "thinner", zh: "更瘦的", isBold: true },{ en: "heavier", zh: "更重的", isBold: true },{ en: "bigger", zh: "更大的", isBold: true },{ en: "smaller", zh: "更小的", isBold: true },{ en: "stronger", zh: "更强壮的", isBold: true },{ en: "dinosaur", zh: "恐龙", isBold: false },{ en: "hall", zh: "大厅", isBold: false },{ en: "metre(meter)", zh: "米", isBold: false },{ en: "than", zh: "比", isBold: false },{ en: "both", zh: "两者都", isBold: false },{ en: "kilogram", zh: "千克", isBold: false },{ en: "countryside", zh: "乡村", isBold: false },{ en: "lower", zh: "更低的", isBold: false },{ en: "shadow", zh: "影子", isBold: false },{ en: "become", zh: "变成", isBold: false }
+            ],
+            unit2: [
+                { en: "cleaned", zh: "打扫了", isBold: true },{ en: "stayed", zh: "待了", isBold: true },{ en: "washed", zh: "洗了", isBold: true },{ en: "watched", zh: "看了", isBold: true },{ en: "had", zh: "有；吃", isBold: true },{ en: "had a cold", zh: "感冒了", isBold: true },{ en: "slept", zh: "睡了", isBold: true },{ en: "read", zh: "读了", isBold: true },{ en: "saw", zh: "看见了", isBold: true },{ en: "last", zh: "上一个", isBold: true },{ en: "yesterday", zh: "昨天", isBold: true },{ en: "before", zh: "在...之前", isBold: true },{ en: "drank", zh: "喝了", isBold: false },{ en: "show", zh: "演出", isBold: false },{ en: "magazine", zh: "杂志", isBold: false },{ en: "better", zh: "更好的", isBold: false },{ en: "faster", zh: "更快的", isBold: false },{ en: "hotel", zh: "旅馆", isBold: false },{ en: "fixed", zh: "修理了", isBold: false },{ en: "broken", zh: "破碎的", isBold: false },{ en: "lamp", zh: "台灯", isBold: false },{ en: "loud", zh: "大声的", isBold: false },{ en: "enjoy", zh: "享受", isBold: false },{ en: "stay", zh: "停留", isBold: false }
+            ],
+            unit3: [
+                { en: "went", zh: "去了", isBold: true },{ en: "camp", zh: "露营", isBold: true },{ en: "went camping", zh: "去露营", isBold: true },{ en: "fish", zh: "鱼；钓鱼", isBold: true },{ en: "went fishing", zh: "去钓鱼", isBold: true },{ en: "rode", zh: "骑了", isBold: true },{ en: "hurt", zh: "受伤", isBold: true },{ en: "ate", zh: "吃了", isBold: true },{ en: "took", zh: "拿了", isBold: true },{ en: "took pictures", zh: "拍照", isBold: true },{ en: "bought", zh: "买了", isBold: true },{ en: "gift", zh: "礼物", isBold: true },{ en: "fell", zh: "摔倒", isBold: false },{ en: "off", zh: "离开", isBold: false },{ en: "mule", zh: "骡子", isBold: false },{ en: "Turpan", zh: "吐鲁番", isBold: false },{ en: "could", zh: "可以", isBold: false },{ en: "till", zh: "直到", isBold: false },{ en: "beach", zh: "海滩", isBold: false },{ en: "laughed", zh: "笑了", isBold: false }
+            ],
+            unit4: [
+                { en: "dining hall", zh: "餐厅", isBold: true },{ en: "grass", zh: "草", isBold: true },{ en: "gym", zh: "体育馆", isBold: true },{ en: "ago", zh: "以前", isBold: true },{ en: "cycling", zh: "骑自行车", isBold: true },{ en: "go cycling", zh: "去骑自行车", isBold: true },{ en: "ice-skate", zh: "滑冰", isBold: true },{ en: "badminton", zh: "羽毛球", isBold: true },{ en: "star", zh: "星星", isBold: false },{ en: "easy", zh: "容易的", isBold: false },{ en: "look up", zh: "查阅", isBold: false },{ en: "Internet", zh: "互联网", isBold: false },{ en: "different", zh: "不同的", isBold: false },{ en: "active", zh: "活跃的", isBold: false },{ en: "race", zh: "赛跑", isBold: false },{ en: "nothing", zh: "什么都没有", isBold: false },{ en: "thought", zh: "想", isBold: false },{ en: "felt", zh: "感觉", isBold: false },{ en: "cheetah", zh: "猎豹", isBold: false },{ en: "trip", zh: "绊倒", isBold: false },{ en: "woke", zh: "醒来", isBold: false },{ en: "dream", zh: "梦", isBold: false }
+            ]
+        }
+    };
+    
+    // 地狱难度评分逻辑
+    let isClassMode = false;
+    let onlyKeyWords = true;  // 重点词模式（只显示粗体词）
+    let showChineseInThreeWords = true;
+    
+    function getScoreConfig() {
+        if(isClassMode) {
+            return { fullLine: 92, thresholds: [{min:92,score:100},{min:85,score:90},{min:78,score:80},{min:70,score:70},{min:60,score:60}], stabilityPenalty: 0.25 };
+        } else {
+            return { fullLine: 85, thresholds: [{min:85,score:100},{min:75,score:90},{min:65,score:80},{min:55,score:70},{min:45,score:60}], stabilityPenalty: 0.20 };
+        }
+    }
+    function computeScoreWithStability(avgVolume, volumesArray) {
+        const cfg = getScoreConfig();
+        let baseScore = 0;
+        for(let t of cfg.thresholds) { if(avgVolume >= t.min) { baseScore = t.score; break; } }
+        if(baseScore === 0) return 0;
+        let stabilityBonus = 1.0;
+        if(volumesArray && volumesArray.length > 5) {
+            const mean = avgVolume;
+            const variance = volumesArray.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / volumesArray.length;
+            const stdDev = Math.sqrt(variance);
+            let penalty = Math.min(cfg.stabilityPenalty, (stdDev - 8) / 40);
+            if(penalty > 0) stabilityBonus = Math.max(0.75, 1 - penalty);
+        }
+        return Math.max(0, Math.floor(baseScore * stabilityBonus));
+    }
+    function updateModeUI() {
+        const cfg = getScoreConfig();
+        const marker = document.getElementById('fullMarker');
+        const label = document.getElementById('fullLabel');
+        if(marker) marker.style.left = cfg.fullLine + '%';
+        if(label) { label.style.left = cfg.fullLine + '%'; label.innerText = isClassMode ? '🏫 全班满分线(92%)' : '⭐ 满分线(85%)'; }
+        document.getElementById('modeToggleBtn').innerText = isClassMode ? '👥 全班模式' : '👤 单人模式';
+        document.getElementById('keyWordToggleBtn').innerText = onlyKeyWords ? '⭐ 重点词模式 (开)' : '📚 全部单词模式 (关)';
+    }
+    function toggleMode() { if(isPlaying) { alert('请先停止当前挑战再切换模式'); return; } isClassMode = !isClassMode; updateModeUI(); if(currentWordScoreDisplay) currentWordScoreDisplay.innerText = '🏅 单词得分: --'; }
+    function toggleKeyWords() { if(isPlaying) { alert('请先停止当前挑战再切换单词模式'); return; } onlyKeyWords = !onlyKeyWords; updateModeUI(); loadUnitAndReset(); }
+    
+    let currentGrade = "五年级下册", currentUnit = "unit1", currentFullWordList = []; // 当前单元全部单词对象
+    let currentWordBank = []; // 过滤后的单词列表 { en, zh }
+    let currentWordIndex = 0, currentRepeat = 0, repeatTimes = 4, isPlaying = false, gameTimeout = null, isSoundOn = true, wordDuration = 950;
+    let wordScores = [], currentWordVolumes = [];
+    let mediaStream = null, audioContext = null, analyserNode = null, isMicActive = false, animationId = null;
+    
+    // DOM 元素
+    const gradeSelect = document.getElementById('gradeSelect'), unitSelectDom = document.getElementById('unitSelect');
+    const startBtn = document.getElementById('startGameBtn'), resetBtn = document.getElementById('resetGameBtn');
+    const speedSlider = document.getElementById('speedSlider'), speedValueSpan = document.getElementById('speedValue');
+    const repeatSlider = document.getElementById('repeatSlider'), repeatValueSpan = document.getElementById('repeatValue');
+    const sizeSlider = document.getElementById('sizeSlider'), soundToggleBtn = document.getElementById('soundToggleBtn');
+    const themeBtn = document.getElementById('themeBtn'), manageBtn = document.getElementById('manageBtn'), fullscreenBtn = document.getElementById('fullscreenBtn');
+    const modalOverlay = document.getElementById('modalOverlay'), modalClose = document.getElementById('modalClose');
+    const wordListDiv = document.getElementById('wordList'), wordEnInput = document.getElementById('wordEn'), wordZhInput = document.getElementById('wordZh'), addWordBtn = document.getElementById('addWordBtn');
+    const resultModal = document.getElementById('resultModal'), resultTitle = document.getElementById('resultTitle'), resultMsg = document.getElementById('resultMsg'), resultOkBtn = document.getElementById('resultOkBtn');
+    const themeModalOverlay = document.getElementById('themeModalOverlay'), themeModalClose = document.getElementById('themeModalClose'), themeGrid = document.getElementById('themeGrid');
+    const volumeFill = document.getElementById('volumeFill'), liveVolumeValue = document.getElementById('liveVolumeValue');
+    const wordCounterSpan = document.getElementById('wordCounter'), repeatCounterSpan = document.getElementById('repeatCounter');
+    const totalScoreSpan = document.getElementById('totalScoreSpan'), avgScoreSpan = document.getElementById('avgScoreSpan');
+    const prevWordDiv = document.getElementById('prevWord'), currentWordZhDiv = document.getElementById('currentWordZh'), nextWordDiv = document.getElementById('nextWord');
+    const floatingWord = document.getElementById('floatingWord');
+    const currentWordScoreDisplay = document.getElementById('currentWordScoreDisplay');
+    const langToggleBtn = document.getElementById('langToggleBtn');
+    const keyWordToggleBtn = document.getElementById('keyWordToggleBtn');
+    
+    function buildFullWordList(grade, unit) {
+        const unitData = FULL_WORD_DATA[grade]?.[unit];
+        if(!unitData) return [];
+        return unitData.map(w => ({ en: w.en, zh: w.zh, isBold: w.isBold }));
+    }
+    function filterWordsByMode(fullList) {
+        if(onlyKeyWords) return fullList.filter(w => w.isBold === true).map(w => ({ en: w.en, zh: w.zh }));
+        else return fullList.map(w => ({ en: w.en, zh: w.zh }));
+    }
+    function getWordDisplayText(wordObj) { if(!wordObj) return '---'; return showChineseInThreeWords ? wordObj.zh : wordObj.en; }
+    function updateThreeWords() {
+        if(!currentWordBank.length) { prevWordDiv.innerText = '---'; currentWordZhDiv.innerText = '---'; nextWordDiv.innerText = '---'; return; }
+        const prevObj = currentWordIndex === 0 ? null : currentWordBank[currentWordIndex-1];
+        const currObj = currentWordBank[currentWordIndex];
+        const nextObj = currentWordIndex+1 >= currentWordBank.length ? null : currentWordBank[currentWordIndex+1];
+        prevWordDiv.innerText = getWordDisplayText(prevObj);
+        currentWordZhDiv.innerText = getWordDisplayText(currObj);
+        nextWordDiv.innerText = getWordDisplayText(nextObj);
+    }
+    function updateStatsUI() {
+        if(!currentWordBank.length) { wordCounterSpan.innerText = `0 / 0`; repeatCounterSpan.innerText = `0/0`; totalScoreSpan.innerText = '0'; avgScoreSpan.innerText = '0'; return; }
+        wordCounterSpan.innerText = `${currentWordIndex+1} / ${currentWordBank.length}`;
+        repeatCounterSpan.innerText = `${currentRepeat}/${repeatTimes}`;
+        let total = wordScores.reduce((a,b)=>a+b,0);
+        totalScoreSpan.innerText = total;
+        let avg = wordScores.length ? (total / wordScores.length).toFixed(1) : 0;
+        avgScoreSpan.innerText = avg;
+        updateThreeWords();
+    }
+    function finishCurrentWord() {
+        if(currentWordVolumes.length === 0) { wordScores[currentWordIndex] = 0; currentWordScoreDisplay.innerText = `🏅 单词得分: 0 (无人发声)`; }
+        else {
+            const avgVolume = currentWordVolumes.reduce((a,b)=>a+b,0) / currentWordVolumes.length;
+            const score = computeScoreWithStability(avgVolume, currentWordVolumes);
+            wordScores[currentWordIndex] = score;
+            let stabilityMsg = "";
+            if(currentWordVolumes.length > 5) {
+                const variance = currentWordVolumes.reduce((sum, v) => sum + Math.pow(v - avgVolume, 2), 0) / currentWordVolumes.length;
+                const stdDev = Math.sqrt(variance);
+                if(stdDev > 12) stabilityMsg = ` (声音不稳 -${Math.floor((stdDev-8)/40*100)}%)`;
+            }
+            currentWordScoreDisplay.innerText = `🏅 单词得分: ${score} (平均音量 ${Math.floor(avgVolume)}%${stabilityMsg})`;
+        }
+        setTimeout(() => { if(isPlaying) currentWordScoreDisplay.innerText = '🏅 单词得分: --'; }, 1500);
+        updateStatsUI();
+        currentWordVolumes = [];
+    }
+    let currentAnimationTimeout = null;
+    function animateWordAndNext() {
+        if(!isPlaying) return;
+        if(currentWordIndex >= currentWordBank.length) { finishUnitAndScore(); return; }
+        const wordObj = currentWordBank[currentWordIndex];
+        updateStatsUI();
+        floatingWord.innerText = wordObj.en;
+        floatingWord.classList.remove('animate-in', 'animate-out');
+        void floatingWord.offsetWidth;
+        floatingWord.classList.add('animate-in');
+        playBeatSound();
+        if(currentAnimationTimeout) clearTimeout(currentAnimationTimeout);
+        currentAnimationTimeout = setTimeout(() => {
+            if(!isPlaying) return;
+            floatingWord.classList.remove('animate-in');
+            floatingWord.classList.add('animate-out');
+            setTimeout(() => {
+                if(!isPlaying) return;
+                currentRepeat++;
+                if(currentRepeat >= repeatTimes) { finishCurrentWord(); currentRepeat = 0; currentWordIndex++; }
+                animateWordAndNext();
+            }, 300);
+        }, wordDuration);
+    }
+    function stopAnimations() { if(currentAnimationTimeout) { clearTimeout(currentAnimationTimeout); currentAnimationTimeout = null; } floatingWord.classList.remove('animate-in', 'animate-out'); floatingWord.innerText = ''; }
+    async function finishUnitAndScore() {
+        if(!isPlaying) return;
+        isPlaying = false;
+        if(currentAnimationTimeout) clearTimeout(currentAnimationTimeout);
+        if(animationId) cancelAnimationFrame(animationId);
+        if(mediaStream) { mediaStream.getTracks().forEach(t=>t.stop()); mediaStream = null; }
+        if(audioContext) { await audioContext.close(); audioContext = null; }
+        isMicActive = false;
+        let total = wordScores.reduce((a,b)=>a+b,0);
+        let avg = wordScores.length ? (total / wordScores.length) : 0;
+        let passed = avg >= 60;
+        let modeText = isClassMode ? "全班模式(地狱)" : "单人模式(困难)";
+        resultTitle.innerText = passed ? "🏆 单元挑战完成" : "📢 平均分未达标";
+        resultMsg.innerHTML = `${passed ? '🎉 恭喜！' : '❌ 再大声一点！'}<br>模式: ${modeText}<br>总分: ${total} / ${currentWordBank.length*100}<br>平均分: ${avg.toFixed(1)}<br>${passed ? '自动重置，可开始新一轮挑战' : '请大声喊麦，点击继续挑战重置本单元'}`;
+        resultModal.classList.add('active');
+        currentWordIndex = 0; currentRepeat = 0; wordScores = new Array(currentWordBank.length).fill(0); currentWordVolumes = [];
+        updateStatsUI();
+        stopAnimations();
+        startBtn.innerText = "🎙️ 开始喊麦";
+    }
+    async function startGame() {
+        if(isPlaying) { stopGameAndMic(); startBtn.innerText = "🎙️ 开始喊麦"; return; }
+        if(!currentWordBank.length) { alert("请先选择有效单元"); return; }
+        currentWordIndex = 0; currentRepeat = 0; wordScores = new Array(currentWordBank.length).fill(0); currentWordVolumes = [];
+        updateStatsUI();
+        stopAnimations();
+        let micSuccess = await initMicAndMonitor();
+        if(!micSuccess) alert("⚠️ 无法获取麦克风权限，评分功能不可用，但喊麦节奏正常进行");
+        isPlaying = true;
+        startBtn.innerText = "⏹️ 停止游戏";
+        animateWordAndNext();
+    }
+    async function initMicAndMonitor() {
+        if(mediaStream) return true;
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaStream = stream;
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyserNode = audioContext.createAnalyser();
+            analyserNode.fftSize = 256;
+            const source = audioContext.createMediaStreamSource(stream);
+            source.connect(analyserNode);
+            if(audioContext.state === 'suspended') await audioContext.resume();
+            isMicActive = true;
+            const bufferLength = analyserNode.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            function updateVolumeMeter() {
+                if(!analyserNode || !isMicActive) return;
+                analyserNode.getByteTimeDomainData(dataArray);
+                let maxSample = 0;
+                for(let i=0;i<bufferLength;i++) { let v = (dataArray[i] - 128) / 128; maxSample = Math.max(maxSample, Math.abs(v)); }
+                let volume = Math.min(100, Math.floor(maxSample * 160));
+                volumeFill.style.width = volume + '%';
+                liveVolumeValue.innerText = volume + '%';
+                if(isPlaying && currentWordIndex < currentWordBank.length) currentWordVolumes.push(volume);
+                animationId = requestAnimationFrame(updateVolumeMeter);
+            }
+            updateVolumeMeter();
+            return true;
+        } catch(e) { console.warn(e); return false; }
+    }
+    function stopGameAndMic() {
+        if(currentAnimationTimeout) { clearTimeout(currentAnimationTimeout); currentAnimationTimeout = null; }
+        isPlaying = false;
+        if(animationId) cancelAnimationFrame(animationId);
+        if(mediaStream) { mediaStream.getTracks().forEach(t=>t.stop()); mediaStream = null; }
+        if(audioContext) { audioContext.close(); audioContext = null; }
+        analyserNode = null; isMicActive = false;
+        startBtn.innerText = "🎙️ 开始喊麦";
+        stopAnimations();
+    }
+    function resetProgress() {
+        if(isPlaying) stopGameAndMic();
+        currentWordIndex = 0; currentRepeat = 0; wordScores = new Array(currentWordBank.length).fill(0); currentWordVolumes = [];
+        updateStatsUI(); stopAnimations(); alert("进度已重置");
+    }
+    let beatAudioCtx = null;
+    function playBeatSound() {
+        if(!isSoundOn) return;
+        try {
+            if(!beatAudioCtx) beatAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if(beatAudioCtx.state === 'suspended') beatAudioCtx.resume();
+            const osc = beatAudioCtx.createOscillator();
+            const gain = beatAudioCtx.createGain();
+            osc.connect(gain); gain.connect(beatAudioCtx.destination);
+            osc.type = 'sine'; osc.frequency.value = 380;
+            gain.gain.setValueAtTime(0.45, beatAudioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, beatAudioCtx.currentTime + 0.25);
+            osc.start(); osc.stop(beatAudioCtx.currentTime + 0.25);
+        } catch(e) {}
+    }
+    function renderWordListManage() {
+        wordListDiv.innerHTML = '';
+        currentWordBank.forEach((w, idx) => {
+            const div = document.createElement('div'); div.className='word-item';
+            div.innerHTML = `<span style="flex:2">${w.en}</span><span style="flex:2">${w.zh}</span><button class="delWordBtn" data-idx="${idx}">🗑️</button>`;
+            wordListDiv.appendChild(div);
+        });
+        document.querySelectorAll('.delWordBtn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                let idx = parseInt(btn.dataset.idx);
+                if(confirm('删除单词')) {
+                    currentWordBank.splice(idx,1);
+                    if(currentWordIndex >= currentWordBank.length) currentWordIndex = Math.max(0, currentWordBank.length-1);
+                    wordScores = new Array(currentWordBank.length).fill(0);
+                    updateStatsUI();
+                    renderWordListManage();
+                }
+            });
+        });
+    }
+    function populateGrades() {
+        const grades = Object.keys(FULL_WORD_DATA);
+        gradeSelect.innerHTML = '';
+        grades.forEach(g => { let opt = document.createElement('option'); opt.value=g; opt.text=g; gradeSelect.appendChild(opt); });
+        gradeSelect.value = currentGrade;
+        updateUnitSelect();
+        gradeSelect.addEventListener('change', () => { if(isPlaying) stopGameAndMic(); currentGrade = gradeSelect.value; updateUnitSelect(); loadUnitAndReset(); });
+        unitSelectDom.addEventListener('change', () => { if(isPlaying) stopGameAndMic(); currentUnit = unitSelectDom.value; loadUnitAndReset(); });
+    }
+    function updateUnitSelect() {
+        const units = Object.keys(FULL_WORD_DATA[currentGrade]);
+        unitSelectDom.innerHTML = '';
+        units.forEach(u => { let opt = document.createElement('option'); opt.value=u; opt.text=`📌 ${u.toUpperCase()}`; unitSelectDom.appendChild(opt); });
+        currentUnit = units[0];
+        unitSelectDom.value = currentUnit;
+    }
+    function loadUnitAndReset() {
+        if(isPlaying) stopGameAndMic();
+        currentFullWordList = buildFullWordList(currentGrade, currentUnit);
+        currentWordBank = filterWordsByMode(currentFullWordList);
+        currentWordIndex = 0; currentRepeat = 0; wordScores = new Array(currentWordBank.length).fill(0); currentWordVolumes = [];
+        updateStatsUI(); stopAnimations(); renderWordListManage();
+        volumeFill.style.width = '0%'; liveVolumeValue.innerText = '0%';
+        currentWordScoreDisplay.innerText = '🏅 单词得分: --';
+        if(currentWordBank.length === 0) alert('当前单元无匹配单词，请关闭重点词模式或选择其他单元');
+    }
+    
+    // 主题系统
+    const themes = [{id:'',name:'霓虹粉紫'},{id:'violet',name:'幻影紫'},{id:'forest',name:'荧光绿'},{id:'ocean',name:'深海蓝'},{id:'sunset',name:'日落橙'},{id:'pink',name:'甜心粉'},{id:'simple-light',name:'✨ 简约白'}];
+    function initThemeModal(){ themeGrid.innerHTML=''; themes.forEach(t=>{ let card=document.createElement('div'); card.className='theme-card'; card.innerText=t.name; card.onclick=()=>{ if(t.id) document.documentElement.dataset.theme=t.id; else delete document.documentElement.dataset.theme; localStorage.setItem('shoutKing_theme',t.id); themeModalOverlay.classList.remove('active'); }; themeGrid.appendChild(card); }); }
+    themeBtn.onclick=()=>themeModalOverlay.classList.add('active');
+    themeModalClose.onclick=()=>themeModalOverlay.classList.remove('active');
+    initThemeModal(); const savedTheme=localStorage.getItem('shoutKing_theme'); if(savedTheme) document.documentElement.dataset.theme=savedTheme;
+    
+    function updateSpeed() { let val = parseInt(speedSlider.value); wordDuration = val; speedValueSpan.innerText = val + "ms"; localStorage.setItem('wordDuration', val); }
+    speedSlider.addEventListener('input', updateSpeed);
+    function updateRepeat() { let val = parseInt(repeatSlider.value); repeatTimes = val; repeatValueSpan.innerText = val + "次"; localStorage.setItem('repeatTimes', val); if(!isPlaying) { currentRepeat = 0; updateStatsUI(); } }
+    repeatSlider.addEventListener('input', updateRepeat);
+    function updateFontSize() { let val = sizeSlider.value; document.documentElement.style.setProperty('--dynamic-font-size', `${val}cqw`); localStorage.setItem('fontSize', val); }
+    sizeSlider.addEventListener('input', updateFontSize);
+    soundToggleBtn.onclick = () => { isSoundOn = !isSoundOn; soundToggleBtn.innerText = isSoundOn ? "🔊 音效开" : "🔇 音效关"; };
+    manageBtn.onclick = () => { renderWordListManage(); modalOverlay.classList.add('active'); };
+    modalClose.onclick = () => modalOverlay.classList.remove('active');
+    addWordBtn.onclick = () => { let en = wordEnInput.value.trim(); let zh = wordZhInput.value.trim() || en; if(en){ currentWordBank.push({en,zh}); wordScores.push(0); renderWordListManage(); updateStatsUI(); wordEnInput.value=''; wordZhInput.value=''; } };
+    resetBtn.onclick = resetProgress;
+    fullscreenBtn.onclick = () => { if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); };
+    startBtn.onclick = startGame;
+    resultOkBtn.onclick = () => { resultModal.classList.remove('active'); if(!isPlaying) startBtn.innerText="🎙️ 开始喊麦"; };
+    const modeToggleBtn = document.getElementById('modeToggleBtn');
+    modeToggleBtn.addEventListener('click', toggleMode);
+    keyWordToggleBtn.addEventListener('click', toggleKeyWords);
+    langToggleBtn.addEventListener('click', () => { showChineseInThreeWords = !showChineseInThreeWords; updateThreeWords(); });
+    
+    const savedSpeed = localStorage.getItem('wordDuration'); if(savedSpeed) { wordDuration = parseInt(savedSpeed); speedSlider.value = wordDuration; speedValueSpan.innerText = wordDuration + "ms"; }
+    const savedRepeat = localStorage.getItem('repeatTimes'); if(savedRepeat) { repeatTimes = parseInt(savedRepeat); repeatSlider.value = repeatTimes; repeatValueSpan.innerText = repeatTimes + "次"; }
+    const savedFont = localStorage.getItem('fontSize'); if(savedFont) { sizeSlider.value = savedFont; document.documentElement.style.setProperty('--dynamic-font-size', `${savedFont}cqw`); }
+    
+    updateModeUI();
+    populateGrades();
+    loadUnitAndReset();
+    window.addEventListener('beforeunload',()=>{ if(mediaStream) mediaStream.getTracks().forEach(t=>t.stop()); if(audioContext) audioContext.close(); });
+</script>
+</body>
+</html>
