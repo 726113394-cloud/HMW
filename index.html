@@ -1357,7 +1357,7 @@
 
         @media (max-width: 640px) {
             .game-container {
-                padding: 10px 10px 90px;   /* 底部边距加大 */
+                padding: 10px 10px 90px;
                 border-radius: 24px;
                 height: 98vh;
                 width: 100vw;
@@ -1433,7 +1433,6 @@
                 <button class="btn btn-info" id="scoreInfoBtn" style="padding:2px 12px;font-size:12px;">📊 计分规则</button>
             </div>
             <div class="header-right">
-                <!-- 分数 & 匹配数 & 计时器默认隐藏，开始后显示 -->
                 <div class="score-area" id="scoreArea">
                     <span class="label">⭐</span>
                     <span class="value gold" id="scoreDisplay">0</span>
@@ -1526,14 +1525,14 @@
         </div>
     </div>
 
-    <!-- 计分规则模态框 -->
+    <!-- 计分规则模态框（文字已更新） -->
     <div class="modal-overlay" id="scoreModal">
         <div class="modal">
             <h2>📊 计分规则（满分100分）</h2>
             <div class="formula">
                 <div class="rule-item"><span>✅ 正确率得分</span><span class="score">(正确配对 ÷ 总词数) × <span class="highlight">70</span></span></div>
-                <div class="rule-item"><span>❌ 选错惩罚</span><span class="score penalty">每次 -3分，最多扣15分</span></div>
-                <div class="rule-item"><span>⏰ 超时扣分</span><span class="score penalty">每次 -2分，最多扣10分</span></div>
+                <div class="rule-item"><span>❌ 选错惩罚</span><span class="score penalty">每次 -3分（<strong>无上限</strong>）</span></div>
+                <div class="rule-item"><span>⏰ 超时扣分</span><span class="score penalty">每次 -2分（<strong>无上限</strong>）</span></div>
                 <div class="rule-item" style="flex-direction:column;align-items:stretch;gap:4px;">
                     <div style="display:flex;justify-content:space-between;"><span>🚀 速度奖励（每对）</span><span class="score reward">0 ~ 3分</span></div>
                     <div class="speed-detail">
@@ -1544,8 +1543,8 @@
                     </div>
                 </div>
                 <div class="rule-item"><span>🏆 完成奖励</span><span class="score reward">全部配对 +<span class="highlight">6</span>分</span></div>
-                <div class="total">⭐ 最终得分 = 正确率得分 + 速度奖励 + 完成奖励 - 选错扣分 - 超时扣分</div>
-                <div class="note">💡 低于60分显示「不过关」｜满分100分可达</div>
+                <div class="total">⭐ 最终得分 = 正确率得分 + 速度奖励 + 完成奖励 − 选错扣分 − 超时扣分</div>
+                <div class="note">💡 扣分无上限，但最终得分最低为 <strong>0 分</strong>，不会为负数</div>
             </div>
             <button class="close-btn" id="closeModalBtn">知道了</button>
         </div>
@@ -1572,7 +1571,7 @@
 
     <script>
         // ================================================================
-        // 完整词库 (PEP 3-6年级 全单元)
+        // 完整词库 (PEP 3-6年级 全单元) —— 与之前完全一致，此处保留
         // ================================================================
         const WORD_BANK = {
             "三上": {
@@ -2265,7 +2264,10 @@
             return positions;
         }
 
-        // 计分
+        // ================================================================
+        // ★★★ 计分函数（核心修改）★★★
+        // 移除 wrongPenalty 和 timeoutPenalty 的上限，最低 0 分
+        // ================================================================
         function calculateSpeedBonus(remainingSeconds) {
             if (remainingSeconds >= 8) return 3;
             if (remainingSeconds >= 5) return 2;
@@ -2275,11 +2277,14 @@
 
         function calculateScore(matched, total, wrong, timeout, speedBonusTotal) {
             const accuracyScore = total > 0 ? (matched / total) * 70 : 0;
-            const wrongPenalty = Math.min(wrong * 3, 15);
-            const timeoutPenalty = Math.min(timeout * 2, 10);
+            // 扣分无上限：直接按次数相乘，不再使用 Math.min 限制
+            const wrongPenalty = wrong * 3;
+            const timeoutPenalty = timeout * 2;
             const speedBonus = Math.min(speedBonusTotal, 30);
             const completeBonus = (matched === total && total > 0) ? 6 : 0;
+
             let final = accuracyScore + speedBonus + completeBonus - wrongPenalty - timeoutPenalty;
+            // 最低 0 分，最高 100 分
             final = Math.max(0, Math.min(100, Math.round(final)));
             return final;
         }
@@ -2322,7 +2327,6 @@
             if (app.elapsedInterval) clearInterval(app.elapsedInterval);
             elapsedTimeDisplay.textContent = '0';
 
-            // 显示头部评分与计时器（动画）
             document.getElementById('scoreArea').classList.add('active');
             document.getElementById('timerBig').classList.add('active');
 
@@ -2482,7 +2486,7 @@
                     finishGame(true); }
             } else {
                 app.wrongCount++;
-                app._wrongPenalty = Math.min(app.wrongCount * 3, 15);
+                app._wrongPenalty = app.wrongCount * 3; // 无上限
                 sound.penalty();
                 app.score = calculateScore(app.matchedCount, app.totalPairs, app.wrongCount, app.timeoutCount, app
                     ._speedBonusTotal);
@@ -2534,7 +2538,7 @@
                     stopTimer();
                     sound.alert();
                     app.timeoutCount++;
-                    app._timeoutPenalty = Math.min(app.timeoutCount * 2, 10);
+                    app._timeoutPenalty = app.timeoutCount * 2; // 无上限
                     app.score = calculateScore(app.matchedCount, app.totalPairs, app.wrongCount, app.timeoutCount, app
                         ._speedBonusTotal);
                     showPopup(`⏰ 超时! -2分`, `当前 ${app.score} 分`);
@@ -2688,7 +2692,6 @@
             app.savedPositions = null;
             app.elapsedSeconds = 0;
             elapsedTimeDisplay.textContent = '0';
-            // 隐藏头部评分和计时器
             document.getElementById('scoreArea').classList.remove('active');
             document.getElementById('timerBig').classList.remove('active');
             startBtn.textContent = '🚀 开始';
@@ -2822,7 +2825,7 @@
                 }
             });
 
-            console.log('🌈 中英消消乐 · 最终版已加载（含分栏、计时器、隐藏动画）');
+            console.log('🌈 中英消消乐 · 最终版已加载（扣分无上限，最低0分）');
         }
 
         document.addEventListener('DOMContentLoaded', init);
