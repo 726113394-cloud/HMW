@@ -298,8 +298,8 @@
         justify-content: center;
         color: var(--text-secondary);
         font-weight: 700;
-        min-width: 36px;
-        height: 36px;
+        min-width: 44px;
+        height: 44px;
         box-shadow: var(--card-shadow);
         backdrop-filter: blur(4px);
         -webkit-backdrop-filter: blur(4px);
@@ -518,7 +518,8 @@
     }
     .settings-group select,
     .settings-group input {
-        padding: 3px 10px;
+        min-height: 44px;
+        padding: 8px 10px;
         border-radius: 30px;
         border: 1.5px solid var(--container-border);
         background: var(--panel-bg);
@@ -548,8 +549,8 @@
         width: 50px;
     }
     .settings-group input[type="checkbox"] {
-        width: 15px;
-        height: 15px;
+        width: 22px;
+        height: 22px;
         accent-color: #8b5fc0;
         cursor: pointer;
     }
@@ -559,11 +560,15 @@
     }
 
     .btn {
-        padding: 5px 16px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 0 16px;
         border: none;
         border-radius: 40px;
         font-weight: 700;
-        font-size: 12px;
+        font-size: 13px;
         cursor: pointer;
         transition: all 0.2s;
         font-family: inherit;
@@ -709,7 +714,10 @@
         gap: 5px;
     }
     .word-chip {
-        padding: 3px 12px;
+        display: inline-flex;
+        align-items: center;
+        min-height: 38px;
+        padding: 4px 12px;
         border-radius: 40px;
         background: var(--chip-bg);
         border: 2px solid var(--chip-border);
@@ -812,7 +820,8 @@
         background: var(--card-bg-en);
         border: 2px solid var(--card-border-en);
         box-shadow: var(--card-shadow);
-        word-break: break-word;
+        overflow-wrap: break-word;
+        word-break: normal;
         line-height: 1.2;
         user-select: none;
         will-change: transform, opacity;
@@ -1011,7 +1020,7 @@
         position: absolute;
         top: 2px;
         left: 5px;
-        font-size: 7px;
+        font-size: 9px;
         font-weight: 800;
         color: var(--text-light);
         text-transform: uppercase;
@@ -1454,7 +1463,7 @@
         .settings { padding: 6px 10px; gap: 4px 8px; }
         .settings-group label { font-size: 11px; }
         .settings-group select, .settings-group input { font-size: 11px; padding: 2px 8px; }
-        .btn { font-size: 11px; padding: 4px 12px; }
+        .btn { font-size: 13px; padding: 0 14px; min-height: 46px; }
         .card { font-size: 12px; border-radius: 12px; padding: 3px 5px; min-width: 38px; min-height: 32px; border-width: 1.5px; }
         .card .type-tag { font-size: 6px; top: 2px; left: 4px; }
         .score-area .value { font-size: 20px; }
@@ -1479,14 +1488,14 @@
             width: 100vw;
         }
         .header h1 { font-size: 17px; }
-        .theme-toggle, .glass-toggle { font-size: 15px; padding: 3px 8px; min-width: 32px; height: 32px; }
+        .theme-toggle, .glass-toggle { font-size: 18px; padding: 4px 10px; min-width: 46px; height: 46px; }
         .timer-big .time { font-size: 22px; min-width: 28px; }
         .timer-big { padding: 2px 12px 2px 8px; }
         .settings { padding: 4px 8px; border-radius: 28px; gap: 3px 5px; }
         .settings-group label { font-size: 10px; }
         .settings-group select, .settings-group input { font-size: 10px; padding: 2px 6px; width: auto; }
         .settings-group input[type="number"] { width: 40px; }
-        .btn { font-size: 10px; padding: 3px 10px; }
+        .btn { font-size: 13px; padding: 0 12px; min-height: 46px; }
         .card { font-size: 10px; border-radius: 10px; padding: 2px 4px; min-width: 32px; min-height: 28px; border-width: 1.5px; }
         .card .type-tag { display: none; }
         .score-area { padding: 2px 8px 2px 6px; gap: 4px 8px; }
@@ -1497,7 +1506,7 @@
         .status-bar .info-item { font-size: 10px; gap: 2px; }
         .status-bar .info-item .num { font-size: 12px; min-width: 14px; }
         .word-panel { padding: 6px 8px; max-height: 100px; border-radius: 18px; }
-        .word-chip { font-size: 10px; padding: 2px 8px; }
+        .word-chip { font-size: 12px; padding: 4px 10px; min-height: 40px; }
         .modal { padding: 16px 18px; border-radius: 24px; }
         .modal h2 { font-size: 20px; }
         .modal .formula { font-size: 13px; padding: 12px; }
@@ -1847,7 +1856,7 @@
                     { en: "wear", zh: "穿" }, { en: "dress", zh: "连衣裙" }, { en: "which", zh: "哪一个" },
                     { en: "season", zh: "季节" }, { en: "winter", zh: "冬天" }, { en: "snow", zh: "雪" },
                     { en: "spring", zh: "春天" }, { en: "summer", zh: "夏天" }, { en: "autumn", zh: "秋天" },
-                    { en: "T-shirt", zh: "T恤" }, { en: "fall", zh: "秋天" }, { en: "leaf", zh: "叶子" },
+                    { en: "T-shirt", zh: "T恤" }, { en: "fall", zh: "秋天（美式）" }, { en: "leaf", zh: "叶子" },
                     { en: "leaves", zh: "叶子(复数)" }, { en: "glove", zh: "手套" }, { en: "then", zh: "然后" }
                 ]
             },
@@ -2231,6 +2240,12 @@
             splitMode: false,
             elapsedSeconds: 0,
             elapsedInterval: null,
+            roundQueue: [],
+            roundNo: 0,
+            matchedThisRound: 0,
+            roundCardW: 0,
+            roundCardH: 0,
+            usingGrid: false,
         };
 
         const $ = id => document.getElementById(id);
@@ -2408,11 +2423,80 @@
             updateWordCountDisplay(); }
 
         // 布局
+        // ================================================================
+        // 一轮题量：由屏幕大小和「最长的词」共同决定。
+        // 卡片宽度必须放得下任何一个不可再拆的词块（英文按空格断、中文按标点断），
+        // 否则浏览器会把 grandfather 这类词拦腰拆成 gran / dfat / her。
+        // ================================================================
+        const _measureCanvas = document.createElement('canvas');
+        const _measureCtx = _measureCanvas.getContext('2d');
+        const CARD_FONT_STACK = "-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif";
+        const CARD_FONT_SIZE = 13;
+
+        function textWidth(text, fontSize) {
+            if (!_measureCtx) return String(text).length * fontSize * 0.62;
+            _measureCtx.font = `700 ${fontSize}px ${CARD_FONT_STACK}`;
+            return _measureCtx.measureText(text).width;
+        }
+
+        // 卡片里允许自然换行的最小单元
+        function widestChunk(text) {
+            const parts = String(text).split(/[\s;；、，,/]+/).filter(Boolean);
+            if (parts.length === 0) return String(text);
+            let widest = parts[0];
+            for (const p of parts) if (textWidth(p, CARD_FONT_SIZE) > textWidth(widest, CARD_FONT_SIZE)) widest = p;
+            return widest;
+        }
+
+        // 一段文字在给定宽度下会占几行（英文按词换行）
+        function lineCount(text, availWidth, fontSize) {
+            const chunks = String(text).split(/[\s;；、，,/]+/).filter(Boolean);
+            let lines = 1,
+                cur = '';
+            for (const c of chunks) {
+                const test = cur ? cur + ' ' + c : c;
+                if (!cur || textWidth(test, fontSize) <= availWidth) cur = test;
+                else { lines++;
+                    cur = c; }
+            }
+            return lines;
+        }
+
+        function computeCardSize(words) {
+            let needW = 0;
+            for (const w of words) {
+                needW = Math.max(needW, textWidth(widestChunk(w.en), CARD_FONT_SIZE));
+                // 中文释义普遍很短，尽量让它整条排在一行（换行会让中文变得难读）
+                needW = Math.max(needW, Math.min(textWidth(w.zh, CARD_FONT_SIZE), 132));
+            }
+            const cardW = Math.max(56, Math.ceil(needW) + 20);
+            const avail = cardW - 20;
+            let lines = 1;
+            for (const w of words) {
+                lines = Math.max(lines, lineCount(w.en, avail, CARD_FONT_SIZE), lineCount(w.zh, avail, CARD_FONT_SIZE));
+            }
+            const cardH = Math.max(44, Math.ceil(CARD_FONT_SIZE * 1.25) * Math.min(3, lines) + 12);
+            return { cardW, cardH };
+        }
+
+        function computeRoundCap(words) {
+            const bw = gameBoard.clientWidth || 600;
+            const bh = gameBoard.clientHeight || 400;
+            const size = computeCardSize(words);
+            const gap = 5;
+            const cols = Math.max(1, Math.floor((bw - 12) / (size.cardW + gap)));
+            const rows = Math.max(1, Math.floor((bh - 12) / (size.cardH + gap)));
+            return Math.min(words.length, Math.max(3, Math.floor((cols * rows) / 2)));
+        }
+
+        // 返回 null 表示「这个尺寸散落放不下」——调用方会改用规整网格。
+        // 绝不允许重叠落点：卡片一旦被完全盖住，学生就找不到它的配对卡了。
         function getRandomPositions(count, cw, ch, cardW, cardH, padding = 5) {
             if (count === 0) return [];
-            const positions = [];
             const pw = cardW + padding,
                 ph = cardH + padding;
+            if (cw - pw < 0 || ch - ph < 0) return null;
+            const positions = [];
             const maxAttempts = 1000;
             for (let i = 0; i < count; i++) {
                 let placed = false,
@@ -2429,9 +2513,41 @@
                     if (!overlap) { positions.push({ x, y });
                         placed = true; }
                 }
-                if (!placed) positions.push({ x: Math.random() * (cw - pw), y: Math.random() * (ch - ph) });
+                if (!placed) return null;
             }
             return positions;
+        }
+
+        // 规整网格：每张卡独占一格，保证不重叠、不遮挡
+        function gridPositions(count, bw, bh, cardW, cardH, gap = 5) {
+            const cols = Math.max(1, Math.floor((bw - 12) / (cardW + gap)));
+            const rows = Math.ceil(count / cols);
+            const usedW = Math.min(cols, count) * (cardW + gap) - gap;
+            const usedH = rows * (cardH + gap) - gap;
+            const offX = Math.max(6, (bw - usedW) / 2);
+            const offY = Math.max(6, (bh - usedH) / 2);
+            const out = [];
+            for (let i = 0; i < count; i++) {
+                out.push({
+                    x: offX + (i % cols) * (cardW + gap),
+                    y: offY + Math.floor(i / cols) * (cardH + gap)
+                });
+            }
+            return out;
+        }
+
+        // 分栏（左英文 / 右中文）在当前屏幕上放得下吗——放不下就别让点
+        function splitLayoutFits(pairs) {
+            const bw = gameBoard.clientWidth || 600;
+            const bh = gameBoard.clientHeight || 400;
+            const size = app.roundCardW ?
+                { cardW: app.roundCardW, cardH: app.roundCardH } :
+                computeCardSize(app.currentWords.length ? app.currentWords : [{ en: '', zh: '' }]);
+            const gap = 5;
+            const half = (bw - 8) / 2;
+            const cols = Math.max(1, Math.floor((half - 4) / (size.cardW + gap)));
+            const rows = Math.max(1, Math.floor((bh - 8) / (size.cardH + gap)));
+            return cols * rows >= pairs;
         }
 
         // 计分
@@ -2463,7 +2579,6 @@
             const fix = fixLayoutCheck.checked;
             let selected = app.selectedWords.slice();
             if (selected.length < 5) { alert('请至少选择5个单词！'); return; }
-            if (selected.length > 40) { if (!confirm(`您选择了 ${selected.length} 个单词，卡片较多可能影响体验，确定继续吗？`)) return; }
 
             app.timerSeconds = timer;
             app.currentGrade = grade;
@@ -2474,8 +2589,7 @@
             app._wrongPenalty = 0;
             app._timeoutPenalty = 0;
             app._speedBonusTotal = 0;
-            app.currentWords = selected.slice();
-            app.totalPairs = app.currentWords.length;
+            app.totalPairs = selected.length;
             app.matchedCount = 0;
             app.wrongCount = 0;
             app.timeoutCount = 0;
@@ -2485,7 +2599,6 @@
             app.isProcessing = false;
             app.finished = false;
             app.selectedIndex = null;
-            app.timerRemaining = app.timerSeconds;
             app._startTime = Date.now();
             app.elapsedSeconds = 0;
             if (app.elapsedInterval) clearInterval(app.elapsedInterval);
@@ -2494,23 +2607,8 @@
             document.getElementById('scoreArea').classList.add('active');
             document.getElementById('timerBig').classList.add('active');
 
-            const cards = [];
-            app.currentWords.forEach((w, idx) => {
-                cards.push({ pairId: idx, type: 'en', text: w.en, zh: w.zh, matched: false });
-                cards.push({ pairId: idx, type: 'zh', text: w.zh, en: w.en, matched: false });
-            });
-            shuffleArray(cards);
-            app.cards = cards;
-            app.splitMode = false;
-            splitLayoutBtn.textContent = '📐 分栏';
-
-            stopTimer();
-            renderGameBoard();
-            updateStatus();
-
-            if (app.timerSeconds > 0) startTimer();
-            else { timerDisplay.textContent = '∞';
-                timerDisplay.className = 'time'; }
+            app.roundQueue = shuffleArray(selected.slice());
+            app.roundNo = 0;
 
             startBtn.textContent = '⏳ 进行中...';
             startBtn.disabled = true;
@@ -2523,6 +2621,55 @@
                     elapsedTimeDisplay.textContent = app.elapsedSeconds;
                 }
             }, 1000);
+
+            const firstCap = computeRoundCap(app.roundQueue);
+            const totalRounds = Math.ceil(selected.length / Math.max(1, firstCap));
+            if (totalRounds > 1) showPopup(`分 ${totalRounds} 轮进行`, `本轮先玩 ${firstCap} 对，其余接着来`);
+
+            startRound();
+        }
+
+        // 开始一轮：从队列头部取「这一屏放得下」的词
+        function startRound() {
+            app.roundNo++;
+            const cap = computeRoundCap(app.roundQueue);
+            const roundWords = app.roundQueue.slice(0, cap);
+            app.roundQueue = app.roundQueue.slice(cap);
+            app.currentWords = roundWords;
+
+            const size = computeCardSize(roundWords);
+            app.roundCardW = size.cardW;
+            app.roundCardH = size.cardH;
+            app.splitMode = false;
+            app.usingGrid = false;
+            splitLayoutBtn.textContent = '📐 分栏';
+            const canSplit = splitLayoutFits(app.currentWords.length);
+            splitLayoutBtn.disabled = !canSplit;
+            splitLayoutBtn.title = canSplit ? '' : '屏幕太窄，分栏会把卡片叠在一起';
+            splitLayoutBtn.style.opacity = canSplit ? '' : '0.45';
+
+            const cards = [];
+            app.currentWords.forEach((w, idx) => {
+                cards.push({ pairId: idx, type: 'en', text: w.en, zh: w.zh, matched: false });
+                cards.push({ pairId: idx, type: 'zh', text: w.zh, en: w.en, matched: false });
+            });
+            shuffleArray(cards);
+            app.cards = cards;
+            app.matchedThisRound = 0;
+            app.selectedIndex = null;
+            app.isProcessing = false;
+            app.savedPositions = null;
+            app.timerRemaining = app.timerSeconds;
+
+            stopTimer();
+            renderGameBoard();
+            updateStatus();
+
+            if (app.timerSeconds > 0) startTimer();
+            else { timerDisplay.textContent = '∞';
+                timerDisplay.className = 'time'; }
+
+            if (app.roundNo > 1) showPopup(`第 ${app.roundNo} 轮`, `还剩 ${app.roundQueue.length + app.currentWords.length} 个词`);
         }
 
         function renderGameBoard() {
@@ -2546,6 +2693,12 @@
                 cardH *= s; }
             cardW = Math.max(36, cardW);
             cardH = Math.max(28, cardH);
+            // 一轮的卡片尺寸由这一轮的词决定（见 computeCardSize）：
+            // 宁可用少几张卡，也不把 grandfather 拆成 gran/dfat/her
+            if (app.roundCardW) {
+                cardW = Math.min(app.roundCardW, bw - 12);
+                cardH = Math.min(app.roundCardH, bh - 12);
+            }
             const padding = 5;
             let positions;
 
@@ -2559,21 +2712,30 @@
                 const halfWidth = (bw - 8) / 2;
                 const enPositions = getRandomPositions(totalEn, halfWidth - 4, bh - 8, cardW, cardH, padding);
                 const zhPositions = getRandomPositions(totalZh, halfWidth - 4, bh - 8, cardW, cardH, padding);
-                positions = new Array(total);
-                enIndices.forEach((idx, i) => {
-                    const pos = enPositions[i] || { x: halfWidth + 4, y: 4 };
-                    positions[idx] = { x: halfWidth + 4 + pos.x, y: pos.y };
-                });
-                zhIndices.forEach((idx, i) => {
-                    const pos = zhPositions[i] || { x: 4, y: 4 };
-                    positions[idx] = { x: 4 + pos.x, y: pos.y };
-                });
+                if (enPositions && zhPositions) {
+                    positions = new Array(total);
+                    enIndices.forEach((idx, i) => {
+                        positions[idx] = { x: halfWidth + 4 + enPositions[i].x, y: enPositions[i].y };
+                    });
+                    zhIndices.forEach((idx, i) => {
+                        positions[idx] = { x: 4 + zhPositions[i].x, y: zhPositions[i].y };
+                    });
+                } else {
+                    // 分栏塞不下就退回混合网格：宁可不要左右对照，
+                    // 也不能把卡片叠在一起让配对卡看不见
+                    positions = gridPositions(total, bw, bh, cardW, cardH, padding);
+                    app.usingGrid = true;
+                }
                 if (app.fixLayout) app.savedPositions = positions;
             } else {
                 if (app.fixLayout && app.savedPositions && app.savedPositions.length === total) {
                     positions = app.savedPositions;
                 } else {
                     positions = getRandomPositions(total, bw - 8, bh - 8, cardW, cardH, padding);
+                    if (positions) { app.usingGrid = false; } else {
+                        positions = gridPositions(total, bw, bh, cardW, cardH, padding);
+                        app.usingGrid = true;
+                    }
                     if (app.fixLayout) app.savedPositions = positions;
                 }
             }
@@ -2589,7 +2751,7 @@
                 div.style.top = pos.y + 'px';
                 div.style.width = cardW + 'px';
                 div.style.height = cardH + 'px';
-                div.style.fontSize = Math.min(14, Math.max(9, cardW / 7.5)) + 'px';
+                div.style.fontSize = (app.roundCardW ? CARD_FONT_SIZE : Math.min(14, Math.max(9, cardW / 7.5))) + 'px';
 
                 const tag = document.createElement('span');
                 tag.className = 'type-tag';
@@ -2639,6 +2801,7 @@
                 c1.matched = true;
                 c2.matched = true;
                 app.matchedCount++;
+                app.matchedThisRound++;
                 const remaining = app.timerRemaining;
                 const speedBonus = calculateSpeedBonus(remaining);
                 app._speedBonusTotal += speedBonus;
@@ -2657,8 +2820,14 @@
                 updateStatus();
                 resetTimer();
                 app.isProcessing = false;
-                if (app.matchedCount === app.totalPairs) { app._gameWin = true;
-                    finishGame(true); }
+                if (app.matchedThisRound === app.currentWords.length) {
+                    if (app.roundQueue.length > 0) {
+                        stopTimer();
+                        showPopup(`🎯 第 ${app.roundNo} 轮完成`, `还有 ${app.roundQueue.length} 个词`);
+                        setTimeout(() => { if (app.isPlaying && !app.finished) startRound(); }, 1100);
+                    } else { app._gameWin = true;
+                        finishGame(true); }
+                }
             } else {
                 app.wrongCount++;
                 app._wrongPenalty = app.wrongCount * 3;
@@ -2865,6 +3034,11 @@
             app.isProcessing = false;
             app.timerRemaining = app.timerSeconds;
             app.savedPositions = null;
+            app.roundQueue = [];
+            app.roundNo = 0;
+            app.matchedThisRound = 0;
+            app.roundCardW = 0;
+            app.roundCardH = 0;
             app.elapsedSeconds = 0;
             elapsedTimeDisplay.textContent = '0';
             document.getElementById('scoreArea').classList.remove('active');
@@ -2873,6 +3047,9 @@
             startBtn.disabled = false;
             reshuffleBtn.style.display = 'none';
             splitLayoutBtn.textContent = '📐 分栏';
+            splitLayoutBtn.disabled = false;
+            splitLayoutBtn.title = '';
+            splitLayoutBtn.style.opacity = '';
             app.splitMode = false;
             timerDisplay.textContent = '--';
             timerDisplay.className = 'time';
