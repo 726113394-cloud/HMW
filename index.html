@@ -3716,8 +3716,12 @@
 
 <script>
 (function () {
+    // ⚠️ 这个键名是"看过没"的标记。重做教学时要**升版本**（这次从 xxl.tutorialShown
+    //    升到 _v2），否则已经看过旧版的人永远看不到新动画（只会走 ❓ 按钮）。
+    // ⚠️ 也要改这里，不能只改生成出来的工具文件：splice.py 是**整块替换**教学脚本的，
+    //    改了工具文件而不改本模板，下一次重拼接就会把改动覆盖回去（踩过一次）。
     var KEY = 'xxl.tutorialShown_v2';
-    // 旧键（看过旧版教学的人）留着没用，顺手清掉，不影响新键的判断
+    // 旧键清了，免得一直占着（不影响上面的判断）
     try { localStorage.removeItem('xxl.tutorialShown'); } catch (e) {}
     var reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
     var byId = function (id) { return document.getElementById(id); };
@@ -3802,7 +3806,6 @@
     }
 
     /* ---------- 演示：真的去操作界面 ---------- */
-    var themedOnce = false, splitOnce = false;
 
     // 选单元：真打开二级选择器 → 真勾两个单元 → 取消（不动学生原来的选择）
     async function demoUnits() {
@@ -3894,47 +3897,68 @@
         spotOn([byId('remainCount')], 10);
     }
 
-    // 主题 / 分栏：真点，各只做一次
+    // 换主题 / 分栏：进入这一步时**真真切切走一次往返**，之后循环只让按钮呼吸。
+    // ⚠️ 老师报过："消消乐教程之后会自动调黑夜模式，这个不对"。
+    //    第一版只点一次 → 停在这步时画面一直是黑的；
+    //    第二版改成每轮循环都往返 → 实测 9 秒里主题闪了 **7 次**，那是闪屏，更糟。
+    //    现在：每次进入这一步走一次 亮→暗→亮（学生看得见真的换了），
+    //    之后循环只打脉冲。既"真操作"、又不闪、也不留副作用。
+    var themeDemoed = false;
     async function demoThemeSplit() {
         var s = byId('splitLayoutBtn');
-        if (s && !splitOnce && app.isPlaying && !app.splitMode) {
-            markTap(s); await sleep(420); s.click(); splitOnce = true; await sleep(720);
-        }
         var t = byId('themeToggle');
-        if (t && !themedOnce) {
-            markTap(t); await sleep(400); t.click(); themedOnce = true; await sleep(560);
+        if (!themeDemoed) {
+            themeDemoed = true;
+            if (s && app.isPlaying && !app.splitMode) {
+                markTap(s); await sleep(340);
+                s.click(); await sleep(880);      // 真的分栏：卡片真的左右分开
+                s.click(); await sleep(660);      // 再合回来
+            }
+            if (t) {
+                markTap(t); await sleep(340);
+                t.click(); await sleep(700);      // 真的切到深色 —— 学生看得见
+                t.click(); await sleep(560);      // 立刻切回原来的浅色
+            }
         }
-        spotOn([byId('themeToggle'), byId('splitLayoutBtn')], 8);
+        spotOn([t, s], 8);
+        markTap(t); markTap(s);                   // 循环时：两个按钮呼吸提示
+        await sleep(950);
         clearTaps();
     }
 
-    /* ---------- 七步（文案沿用老师原来的写法） ---------- */
+    /* ---------- 七步（文案沿用老师原来的写法） ----------
+       每一步都给 loopMs：老师明确要求"教学要循环演示"。各步的 run 都得是**可循环**的：
+       · 第 1 步每轮真的重开一次选择器（可循环）
+       · 第 2/7 步的动作有守卫（已经开局 / 已经换过主题就不再动），循环时只打脉冲
+       · 第 3/5 步只有第一轮真点卡片（避免把这一局打通），之后循环只打脉冲
+       · 第 4 步的倒计时本来就在真跑；第 6 步每轮刷新真实轮次数据
+       */
     var STEPS = [
-        { ico: '✏️', h: '先挑要练的单元', sel: '#pickUnitBtn',
+        { ico: '✏️', h: '先挑要练的单元', sel: '#pickUnitBtn', loopMs: 4200,
           p: '点「📚 年级 / 单元」这些小卡片挑这一轮练什么。<b>可以一次勾好几个单元</b>，卡片里还有「本册全选」一键全勾。至少选 5 个词才能开始。',
           run: function () { return demoUnits(); } },
 
-        { ico: '🚀', h: '点开始，卡片散开', sel: '#startBtn',
+        { ico: '🚀', h: '点开始，卡片散开', sel: '#startBtn', loopMs: 2400,
           p: '点「🚀 开始」，英文卡和中文卡会<b>随机散布</b>到棋盘上 —— 散布放不下时会自动改成规整网格，不会互相盖住。',
           run: function () { return demoStart(); } },
 
         { ico: '👉', h: '点两张，配成一对', loopMs: 2800,
-          p: '先点一张卡（它会亮起来），再点它对应的另一张。配上了就<b>一起消失并加分</b>。下面演示的就是真卡片自己配对。',
+          p: '先点一张卡（它会亮起来），再点它对应的另一张。配上了就<b>一起消失并加分</b>。下面演示的就是真卡片自己在配对。',
           run: function (n) { return demoPair(true, n === 0); } },
 
-        { ico: '⏱️', h: '每配成一对就重新给满', sel: '#timerDisplay',
-          p: '每配一对有几秒钟（设置栏里可改，默认 10 秒）。<b>每配成一对就重新给满</b>；时间到还没配上会扣 2 分。左上角这个数字就是它。',
+        { ico: '⏱️', h: '每配成一对就重新给满', sel: '#timerDisplay', loopMs: 2200,
+          p: '每配一对有几秒钟（设置栏里可改，默认 10 秒）。<b>每配成一对就重新给满</b>；时间到还没配上会扣 2 分。左上角这个数字就是它，是真的在走。',
           run: function () { spotOn([byId('timerDisplay')], 10); } },
 
         { ico: '⚠️', h: '配错会红闪并扣分', loopMs: 3000,
           p: '配错的一组会红闪、抖一下，同时<b>扣 3 分</b>。别乱点，看准了再点第二张。',
           run: function (n) { return demoPair(false, n === 0); } },
 
-        { ico: '🔁', h: '词多会自动分轮', sel: '#remainCount',
+        { ico: '🔁', h: '词多会自动分轮', sel: '#remainCount', loopMs: 3400,
           p: '一屏放不下时<b>不会硬塞</b>，而是分成几轮；这一轮消完自动接下一轮。',
           run: function () { return roundCaption(); } },
 
-        { ico: '🎨', h: '换主题，还能分栏', sel: '#themeToggle',
+        { ico: '🎨', h: '换主题，还能分栏', sel: '#themeToggle', loopMs: 2600,
           p: '浅色 / 深色 / 玻璃三种主题随便换。「📐 分栏」能把中文和英文左右分开 —— 屏幕太窄时它自己会禁用。',
           run: function () { return demoThemeSplit(); } }
     ];
@@ -3950,10 +3974,13 @@
 
     function runStep() {
         var st = STEPS[idx];
-        var n = 0;
+        var n = 0, busy = false;
         var fire = function () {
             if (!running || STEPS[idx] !== st) return;
+            if (busy) return;   // 上一次还没演完就别叠着起（否则循环会把选择器开两次）
+            busy = true;
             Promise.resolve(st.run(n)).catch(function () {}).then(function () {
+                busy = false;
                 // 演示过程中聚光灯可能临时指向别处（比如选择器面板）。
                 // 演示一做完就把它**收回这一步的锚点**，否则会停在临时位置
                 // 甚至停在一个已经被关掉的浮层原来的地方。
@@ -3962,6 +3989,8 @@
             n++;
         };
         fire();
+        // 循环演示：老师要的是"一直演给学生看"，不是点一下动一次。
+        // reduced-motion 下不循环（那正是"减少动效"的意思）。
         if (st.loopMs && !reduced) {
             timers.push(setInterval(function () { fire(); }, st.loopMs));
         }
@@ -3973,6 +4002,7 @@
         var st = STEPS[idx];
         stopLoops();
         clearTaps();
+        themeDemoed = false;   // 每次进入这一步，允许再真实演示一次（并且走回原样）
         byId('tutIco').textContent = st.ico;
         byId('tutH').textContent = st.h;
         byId('tutP').innerHTML = st.p;
@@ -4002,8 +4032,6 @@
             split: !!app.splitMode,
             timer: tInput ? tInput.value : null
         };
-        themedOnce = false;
-        splitOnce = false;
         // 演示期间给足倒计时，免得演到一半超时扣分（收尾会还原）
         if (app.timerSeconds < 30) {
             app.timerSeconds = 60;
